@@ -1,7 +1,15 @@
-xxxxxxxxxxxxxxx
-x p       b   x
-x   xxxxxxxx  x
-x      x      x
-x  i   X  i   x
-x             x
-xxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxxx
+xp              x 
+x x x x x x x x x
+x               x 
+x x x x x x x x x
+x               x
+x x x x x x x x x
+x               x
+x x x x x x x x x
+x               x
+x x x x x x x x x
+x              px
+xxxxxxxxxxxxxxxxx
+
+
