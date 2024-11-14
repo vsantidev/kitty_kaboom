@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.github.kittykaboom.GameMap;
+
 public class SolidWall extends Wall {
     private Sprite wallSprite;
 
@@ -16,9 +18,11 @@ public class SolidWall extends Wall {
         wallSprite.setPosition(x, y);
 
         // Applique une échelle pour réduire la taille d'affichage
-        wallSprite.setScale(0.6f, 0.5f); // 60% de largeur et 50% de hauteur
-    }
+        //wallSprite.setScale(0.6f, 0.5f); // 60% de largeur et 50% de hauteur
+        wallSprite.setSize(GameMap.getCellWidth(), GameMap.getCellHeight()); // Utilisation des getters    }
 
+    }
+    
     @Override
     public void setTexture(Texture texture) {
         if (this.texture != null) {

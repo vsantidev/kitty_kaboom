@@ -15,7 +15,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.kittykaboom.Players.Player;
 import io.github.kittykaboom.Walls.Wall;
 
-
 public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -48,7 +47,8 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1); // Définit une couleur de fond noire
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Efface l'écran
 
-        camera.position.set(600, 300, 0);
+        //camera.position.set(400, 300, 0);
+        camera.position.set((GameMap.getTotalCols() * GameMap.getCellWidth()) / 2f, (GameMap.getTotalRows() * GameMap.getCellHeight()) / 2f, 0);
         camera.update(); // Met à jour la caméra
         batch.setProjectionMatrix(camera.combined); // Définit la matrice de projection
 

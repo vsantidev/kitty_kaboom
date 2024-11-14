@@ -19,6 +19,26 @@ public class GameMap {
     private static final int CELL_WIDTH = 50; // Largeur de cellule en pixels
     private static final int CELL_HEIGHT = 46; // Hauteur de cellule en pixels
     private static final int TOTAL_ROWS = 13; // Nombre total de lignes dans map.txt
+    private static final int TOTAL_COLS = 16; // Nombre de colonnes dans map.txt
+
+        // Méthodes getters pour CELL_WIDTH et CELL_HEIGHT
+        public static int getCellWidth() {
+            return CELL_WIDTH;
+        }
+    
+        public static int getCellHeight() {
+            return CELL_HEIGHT;
+        }
+
+        public static int getTotalRows() {
+            return TOTAL_ROWS;
+        }
+    
+        public static int getTotalCols() {
+            return TOTAL_COLS;
+        }
+
+
 
 
     public GameMap(String mapFilePath) {
