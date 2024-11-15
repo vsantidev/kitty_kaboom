@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Explosion {
     private Texture texture;
     private float x, y;
-    private float duration = 5f;
+    private float duration = 1f;
 
 
     public Explosion(float x, float y) {

@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.kittykaboom.Items.YarnBall.Explosion;
+import io.github.kittykaboom.Items.YarnBall.YarnBall;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
 import io.github.kittykaboom.Walls.Wall;
@@ -45,6 +46,17 @@ public class GameScreen implements Screen {
         explosions.add(new Explosion(x, y));
     }
 
+    private void renderExplosions(float delta, SpriteBatch batch) {
+        List<Explosion> explosionsToRemove = new ArrayList<>();
+        for (Explosion explosion : explosions) {
+            if (explosion.update(delta)) {
+                explosionsToRemove.add(explosion); // Explosion terminée
+            }
+            explosion.render(batch);
+        }
+        explosions.removeAll(explosionsToRemove);
+    }
+
     // ========== Show ==========
     @Override
     public void show() {}
@@ -73,12 +85,12 @@ public class GameScreen implements Screen {
         if (player != null) {
             player.render(batch);
         }
+
+        renderExplosions(delta, batch);
+
         batch.end();
 
-        //Explosion
-        for (Explosion explosion : explosions) {
-            explosion.render(batch);
-        }
+
     }
     
     // ========== Resize ==========
@@ -149,7 +161,7 @@ public class GameScreen implements Screen {
         float originalX = player.getBounds().x;
         float originalY = player.getBounds().y;
 
-        // Déplacer le joueur temporairement
+        // Déplace le joueur temporairement
         player.move(dx, dy);
         
 
@@ -162,19 +174,26 @@ public class GameScreen implements Screen {
             }
         }
 
+        // Vérifie la collision entre le joueur et chaque boule de laine
+        boolean collidedWithYarnBall = false;
+        for (YarnBall yarnBall : ((CatPlayer) player).getYarnBalls()) {
+            if (yarnBall.isBlocking() && player.getBounds().overlaps(yarnBall.getBounds())) {
+                collidedWithYarnBall = true;
+                break;
+            }
+        }
+        // Si une collision avec une boule de laine, annulez le déplacement
+        if (collidedWithYarnBall) {
+            player.move(-dx, -dy);
+        }
+
         // Si une collision est détectée, rétablissez la position initiale
         if (collided) {
             player.move(-dx, -dy);
         }
 
-
-        List<Explosion> explosionsToRemove = new ArrayList<>();
-        for (Explosion explosion : explosions) {
-            if (explosion.update(delta)) {
-                explosionsToRemove.add(explosion);
-            }
-        }
-        explosions.removeAll(explosionsToRemove);
+        // Met à jour les balles de laine et leur explosion
+        ((CatPlayer) player).update(delta);
 
     }
     

@@ -71,7 +71,7 @@ public class CatPlayer extends Player {
         List<YarnBall> ballsToRemove = new ArrayList<>();
 
         for (YarnBall yarnBall : yarnBalls) {
-            if (yarnBall.update(delta)) { // Si le cooldown est écoulé
+            if (yarnBall.update(delta, bounds)) { // Si le cooldown est écoulé
                 yarnBall.explode(); // Déclenche l'explosion
                 ballsToRemove.add(yarnBall); // Marque pour suppression
             }

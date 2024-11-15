@@ -10,6 +10,7 @@ import io.github.kittykaboom.GameMap;
 public abstract class YarnBall {
     protected Sprite yarnSprite;
     protected Rectangle bounds;
+    private boolean blocking;
     protected float cooldown;
 
     //____________ COSNTRUCTOR ____________
@@ -19,13 +20,14 @@ public abstract class YarnBall {
         this.yarnSprite.setPosition(x,y);
 
         // Initialisez les limites pour la balle de laine
-        int adjustedWidth = GameMap.getCellWidth();
-        int adjustedHeight = GameMap.getCellHeight();
+        int adjustedWidth = GameMap.getCellWidth() - 6;
+        int adjustedHeight = GameMap.getCellHeight() - 6;
 
         this.yarnSprite.setSize(adjustedWidth, adjustedHeight);
         this.bounds = new Rectangle(x,y, adjustedWidth, adjustedHeight);
     
         this.cooldown = 5f;
+        this.blocking = false;
     }
 
     //____________ GETTERS & SETTERS ____________
@@ -33,9 +35,21 @@ public abstract class YarnBall {
         return bounds;
     }
 
+    public boolean isBlocking() {
+        return blocking;
+    }
+
+    public void setBlocking(boolean blocking) {
+        this.blocking = blocking;
+    }
+
     //____________ METHODS ____________
-    public boolean update(float delta) {
+    public boolean update(float delta, Rectangle playerBounds) {
         cooldown -=delta;
+        if (!blocking && !bounds.overlaps(playerBounds)) {
+            blocking = true;
+        }
+
         return cooldown <= 0; //Retourne True si le cooldown est écoulé
     }
 
