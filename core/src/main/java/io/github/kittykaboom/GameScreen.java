@@ -1,5 +1,6 @@
 package io.github.kittykaboom;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -11,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.kittykaboom.Items.YarnBall.Explosion;
+import io.github.kittykaboom.Items.YarnBall.YarnBall;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
 import io.github.kittykaboom.Walls.Wall;
@@ -21,6 +24,7 @@ public class GameScreen implements Screen {
     private SpriteBatch batch;
     private Player player;
     private List<Wall> walls;
+    private List<Explosion> explosions = new ArrayList<>();
 
     private GameMap gameMap;
     
@@ -37,6 +41,22 @@ public class GameScreen implements Screen {
     }
 
     // _________________ METHODS _________________
+
+    public void addExplosion(float x, float y) {
+        explosions.add(new Explosion(x, y));
+    }
+
+    private void renderExplosions(float delta, SpriteBatch batch) {
+        List<Explosion> explosionsToRemove = new ArrayList<>();
+        for (Explosion explosion : explosions) {
+            if (explosion.update(delta)) {
+                explosionsToRemove.add(explosion); // Explosion terminée
+            }
+            explosion.render(batch);
+        }
+        explosions.removeAll(explosionsToRemove);
+    }
+
     // ========== Show ==========
     @Override
     public void show() {}
@@ -65,7 +85,12 @@ public class GameScreen implements Screen {
         if (player != null) {
             player.render(batch);
         }
+
+        renderExplosions(delta, batch);
+
         batch.end();
+
+
     }
     
     // ========== Resize ==========
@@ -125,11 +150,9 @@ public class GameScreen implements Screen {
         // Vérifiez si la touche SPACE est pressée pour poser une balle de laine
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             if (player instanceof CatPlayer) {
-                ((CatPlayer) player).placeYarnBall();
+                ((CatPlayer) player).placeYarnBall(this);
             }
-
         }
-
 
         // Debug : Affiche les valeurs de dx et dy
         System.out.println("dx: " + dx + ", dy: " + dy);
@@ -138,8 +161,9 @@ public class GameScreen implements Screen {
         float originalX = player.getBounds().x;
         float originalY = player.getBounds().y;
 
-        // Déplacer le joueur temporairement
+        // Déplace le joueur temporairement
         player.move(dx, dy);
+        
 
         // Vérification de collision avec chaque mur
         boolean collided = false;
@@ -150,10 +174,27 @@ public class GameScreen implements Screen {
             }
         }
 
+        // Vérifie la collision entre le joueur et chaque boule de laine
+        boolean collidedWithYarnBall = false;
+        for (YarnBall yarnBall : ((CatPlayer) player).getYarnBalls()) {
+            if (yarnBall.isBlocking() && player.getBounds().overlaps(yarnBall.getBounds())) {
+                collidedWithYarnBall = true;
+                break;
+            }
+        }
+        // Si une collision avec une boule de laine, annulez le déplacement
+        if (collidedWithYarnBall) {
+            player.move(-dx, -dy);
+        }
+
         // Si une collision est détectée, rétablissez la position initiale
         if (collided) {
             player.move(-dx, -dy);
         }
+
+        // Met à jour les balles de laine et leur explosion
+        ((CatPlayer) player).update(delta);
+
     }
     
 }

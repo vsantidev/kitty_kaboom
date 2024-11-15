@@ -8,10 +8,8 @@ public class PoisonYarnBall extends YarnBall{
     
         //____________ METHODS ____________
         @Override
-        public void attack() {
+        public void explode() {
             System.out.println("Poison YarnBall: leaves a toxic residue!");
             // Ajoutez la logique pour l'effet de poison ici
         }
-
-
 }

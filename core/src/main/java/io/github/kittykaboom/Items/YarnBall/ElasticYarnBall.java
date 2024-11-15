@@ -8,7 +8,7 @@ public class ElasticYarnBall extends YarnBall {
         }
     //____________ METHODS ____________
     @Override
-    public void attack() {
+    public void explode() {
         System.out.println("Elastic YarnBall: bounces off walls!");
         // Ajoutez la logique pour l'effet élastique ici !!!!!!
         
