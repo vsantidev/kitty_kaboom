@@ -1,5 +1,6 @@
 package io.github.kittykaboom;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.kittykaboom.Items.YarnBall.Explosion;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
 import io.github.kittykaboom.Walls.Wall;
@@ -21,6 +23,7 @@ public class GameScreen implements Screen {
     private SpriteBatch batch;
     private Player player;
     private List<Wall> walls;
+    private List<Explosion> explosions = new ArrayList<>();
 
     private GameMap gameMap;
     
@@ -37,6 +40,11 @@ public class GameScreen implements Screen {
     }
 
     // _________________ METHODS _________________
+
+    public void addExplosion(float x, float y) {
+        explosions.add(new Explosion(x, y));
+    }
+
     // ========== Show ==========
     @Override
     public void show() {}
@@ -66,6 +74,11 @@ public class GameScreen implements Screen {
             player.render(batch);
         }
         batch.end();
+
+        //Explosion
+        for (Explosion explosion : explosions) {
+            explosion.render(batch);
+        }
     }
     
     // ========== Resize ==========
@@ -125,11 +138,9 @@ public class GameScreen implements Screen {
         // Vérifiez si la touche SPACE est pressée pour poser une balle de laine
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             if (player instanceof CatPlayer) {
-                ((CatPlayer) player).placeYarnBall();
+                ((CatPlayer) player).placeYarnBall(this);
             }
-
         }
-
 
         // Debug : Affiche les valeurs de dx et dy
         System.out.println("dx: " + dx + ", dy: " + dy);
@@ -140,6 +151,7 @@ public class GameScreen implements Screen {
 
         // Déplacer le joueur temporairement
         player.move(dx, dy);
+        
 
         // Vérification de collision avec chaque mur
         boolean collided = false;
@@ -154,6 +166,16 @@ public class GameScreen implements Screen {
         if (collided) {
             player.move(-dx, -dy);
         }
+
+
+        List<Explosion> explosionsToRemove = new ArrayList<>();
+        for (Explosion explosion : explosions) {
+            if (explosion.update(delta)) {
+                explosionsToRemove.add(explosion);
+            }
+        }
+        explosions.removeAll(explosionsToRemove);
+
     }
     
 }

@@ -8,9 +8,9 @@ import com.badlogic.gdx.math.Rectangle;
 import io.github.kittykaboom.GameMap;
 
 public abstract class YarnBall {
-    private Sprite yarnSprite;
-    private Rectangle bounds;
-
+    protected Sprite yarnSprite;
+    protected Rectangle bounds;
+    protected float cooldown;
 
     //____________ COSNTRUCTOR ____________
     public YarnBall(float x, float y, String texturePath) {
@@ -24,17 +24,29 @@ public abstract class YarnBall {
 
         this.yarnSprite.setSize(adjustedWidth, adjustedHeight);
         this.bounds = new Rectangle(x,y, adjustedWidth, adjustedHeight);
+    
+        this.cooldown = 5f;
     }
 
-    //____________ METHODS ABSTRACT____________
-    public abstract void attack();
+    //____________ GETTERS & SETTERS ____________
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
+    //____________ METHODS ____________
+    public boolean update(float delta) {
+        cooldown -=delta;
+        return cooldown <= 0; //Retourne True si le cooldown est écoulé
+    }
 
     public void render(SpriteBatch batch) {
         yarnSprite.draw(batch);
     }
 
-    public Rectangle getBounds() {
-        return bounds;
-    }
+
+    //____________ METHODS ABSTRACT ____________
+    // public abstract void attack();
+
+    public abstract void explode();
 
 }
