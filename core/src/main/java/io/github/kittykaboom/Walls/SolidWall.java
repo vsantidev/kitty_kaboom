@@ -3,11 +3,13 @@ package io.github.kittykaboom.Walls;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 import io.github.kittykaboom.GameMap;
 
 public class SolidWall extends Wall {
     private Sprite wallSprite;
+    private Rectangle bounds;
 
     public SolidWall(float x, float y) {
         super(x, y);
@@ -21,6 +23,13 @@ public class SolidWall extends Wall {
         //wallSprite.setScale(0.6f, 0.5f); // 60% de largeur et 50% de hauteur
         wallSprite.setSize(GameMap.getCellWidth(), GameMap.getCellHeight()); // Utilisation des getters    }
 
+        // Défini les limites du mur pour les collisions
+        this.bounds = new Rectangle(x,y, GameMap.getCellWidth(), GameMap.getCellHeight());
+
+    }
+
+    public Rectangle getBounds(){
+        return  bounds; // Retourne les limites pour les vérifications de collision
     }
     
     @Override

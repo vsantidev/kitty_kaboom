@@ -119,8 +119,13 @@ public class GameScreen implements Screen {
         //         player.move(-movement.x, -movement.y);
         //         break;
         //     }
+
         // }
-        // Enregistrer la position actuelle du joueur pour restaurer en cas de collision
+
+
+      // Debug : Affiche les valeurs de dx et dy
+    System.out.println("dx: " + dx + ", dy: " + dy);   
+    // Enregistrer la position actuelle du joueur pour restaurer en cas de collision
     float originalX = player.getBounds().x;
     float originalY = player.getBounds().y;
 
