@@ -27,4 +27,6 @@ public abstract class Wall {
     }
 
     public abstract void setTexture(Texture texture);
+
+    public abstract boolean isDestructible();
 }
