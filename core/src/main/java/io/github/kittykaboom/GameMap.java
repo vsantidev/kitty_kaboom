@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
 import io.github.kittykaboom.Walls.SolidWall;
@@ -14,6 +15,7 @@ import io.github.kittykaboom.Walls.Wall;
 public class GameMap {
     // private List<String> mapLines = new ArrayList<>();
     private List<Wall> walls = new ArrayList<>();
+    private List<YarnBallUp> yarnBallUp = new ArrayList<>();
     private Player player;
 
     private static final int CELL_WIDTH = 50; // Largeur de cellule en pixels
@@ -67,6 +69,9 @@ public class GameMap {
                         case 'p':
                             player = new CatPlayer(x, y);
                             break;
+                        case 'u':
+                            yarnBallUp.add(new YarnBallUp(x, y));
+                            break;
                         // Ajoutez d’autres cases pour d’autres éléments
                     }
                 }
@@ -84,4 +89,9 @@ public class GameMap {
     public Player getPlayer() {
         return player;
     }
+
+    public List<YarnBallUp> getYarnBallUps() {
+        return yarnBallUp;
+    }
+    
 }
