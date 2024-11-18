@@ -19,7 +19,6 @@ import io.github.kittykaboom.Items.YarnBall.Explosion;
 import io.github.kittykaboom.Items.YarnBall.YarnBall;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
-import io.github.kittykaboom.Walls.SoftWall;
 import io.github.kittykaboom.Walls.Wall;
 
 public class GameScreen implements Screen {
@@ -53,15 +52,15 @@ public class GameScreen implements Screen {
         explosions.add(new Explosion(x, y));
     }
 
-    public void handleExplosion(Rectangle explosionArea) {
-        // Iterate over walls to check for collisions with the explosion area
-        for (Wall wall : new ArrayList<>(walls)) { // Use a copy to avoid concurrent modification issues
-            if (wall instanceof SoftWall && wall.getBounds() != null && wall.getBounds().overlaps(explosionArea)) {
-                ((SoftWall) wall).destroy(); // Destroy the wall
-                walls.remove(wall); // Remove the destroyed wall from the game
-            }
-        }
-    }
+    // public void handleExplosion(Rectangle explosionArea) {
+    //     // Iterate over walls to check for collisions with the explosion area
+    //     for (Wall wall : new ArrayList<>(walls)) { // Use a copy to avoid concurrent modification issues
+    //         if (wall instanceof SoftWall && wall.getBounds() != null && wall.getBounds().overlaps(explosionArea)) {
+    //             ((SoftWall) wall).destroy(); // Destroy the wall
+    //             walls.remove(wall); // Remove the destroyed wall from the game
+    //         }
+    //     }
+    // }
 
     private void renderExplosions(float delta, SpriteBatch batch) {
         List<Explosion> explosionsToRemove = new ArrayList<>();
@@ -71,7 +70,7 @@ public class GameScreen implements Screen {
             }
             explosion.render(batch);
             Rectangle explosionArea = explosion.getBounds(); // Assuming Explosion has a getBounds() method
-            handleExplosion(explosionArea);
+            //handleExplosion(explosionArea);
         }
         explosions.removeAll(explosionsToRemove);
     }

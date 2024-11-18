@@ -9,8 +9,8 @@ import java.util.List;
 import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
-import io.github.kittykaboom.Walls.SolidWall;
 import io.github.kittykaboom.Walls.SoftWall;
+import io.github.kittykaboom.Walls.SolidWall;
 import io.github.kittykaboom.Walls.Wall;
 
 public class GameMap {
@@ -70,8 +70,15 @@ public class GameMap {
         for (Wall wall : walls) {
             if (wall.getBounds().x == wallX && wall.getBounds().y == wallY) {
                 // System.out.println("Wall Trouvé");
+
+                if (wall.isDestructible()){
+                    System.out.println("petable");
+                    walls.remove(wall);
+                }
                 return true; // Mur trouvé
             }
+
+        
             
 
             // System.out.println(wall.getBounds().x);
