@@ -9,6 +9,7 @@ import java.util.List;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
 import io.github.kittykaboom.Walls.SolidWall;
+import io.github.kittykaboom.Walls.SoftWall;
 import io.github.kittykaboom.Walls.Wall;
 
 public class GameMap {
@@ -63,6 +64,9 @@ public class GameMap {
                     switch (cell) {
                         case 'x':
                             walls.add(new SolidWall(x, y));
+                            break;
+                        case 's': // Soft wall
+                            walls.add(new SoftWall(x, y));
                             break;
                         case 'p':
                             player = new CatPlayer(x, y);
