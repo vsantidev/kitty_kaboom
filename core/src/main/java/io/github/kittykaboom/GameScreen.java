@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Items.YarnBall.Explosion;
 import io.github.kittykaboom.Items.YarnBall.YarnBall;
 import io.github.kittykaboom.Players.CatPlayer;
@@ -86,6 +87,11 @@ public class GameScreen implements Screen {
             player.render(batch);
         }
 
+        // Rendre les YarnBallUp
+        for (YarnBallUp yarnBallUp : gameMap.getYarnBallUps()) {
+            yarnBallUp.render(batch);
+        }
+
         renderExplosions(delta, batch);
 
         batch.end();
@@ -127,6 +133,7 @@ public class GameScreen implements Screen {
         if (player != null && player.getTexture() != null) {
             player.getTexture().dispose();
         }
+
     }
 
 
@@ -191,6 +198,19 @@ public class GameScreen implements Screen {
         if (collided) {
             player.move(-dx, -dy);
         }
+
+            // Vérifiez les collisions avec YarnBallUp
+    List<YarnBallUp> itemsToRemove = new ArrayList<>();
+    for (YarnBallUp yarnBallUp : gameMap.getYarnBallUps()) {
+        if (player.getBounds().overlaps(yarnBallUp.getBounds())) {
+            ((CatPlayer) player).increaseMaxYarnBalls(); // Augmenter la capacité du joueur
+            itemsToRemove.add(yarnBallUp); // Supprimer l’item
+            System.out.println("Collected YarnBallUp! Max YarnBalls: " + ((CatPlayer) player).getMaxYarnBalls());
+        }
+    }
+
+    // Retirez les items ramassés
+    gameMap.getYarnBallUps().removeAll(itemsToRemove);
 
         // Met à jour les balles de laine et leur explosion
         ((CatPlayer) player).update(delta);

@@ -50,4 +50,9 @@ public class SolidWall extends Wall {
     public Texture getTexture() {
         return texture;
     }
+
+    @Override
+    public boolean isDestructible() {
+        return false;
+    }
 }

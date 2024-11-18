@@ -26,7 +26,7 @@ public abstract class YarnBall {
         this.yarnSprite.setSize(adjustedWidth, adjustedHeight);
         this.bounds = new Rectangle(x,y, adjustedWidth, adjustedHeight);
     
-        this.cooldown = 5f;
+        this.cooldown = 3f;
         this.blocking = false;
     }
 
