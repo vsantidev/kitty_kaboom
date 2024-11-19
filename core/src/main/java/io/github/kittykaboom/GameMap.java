@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.math.Rectangle;
+
 import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
@@ -48,6 +50,8 @@ public class GameMap {
     public GameMap(String mapFilePath) {
         loadMap(mapFilePath);
     }
+
+    
 
     public boolean isSolidWall(int cellX, int cellY) {
         // System.out.println("cell X:");
@@ -138,5 +142,19 @@ public class GameMap {
     public List<YarnBallUp> getYarnBallUps() {
         return yarnBallUp;
     }
+
+
+    public boolean isPlayerHit(List<Rectangle> explosionAreas) {
+    Rectangle playerBounds = player.getBounds(); // Supposons que votre joueur a une méthode getBounds()
+
+        for (Rectangle area : explosionAreas) {
+            if (playerBounds.overlaps(area)) {
+                return true; // Le joueur est touché
+            }
+        }
+
+        return false; // Le joueur n'est pas dans la zone d'explosion
+    }
+
     
 }
