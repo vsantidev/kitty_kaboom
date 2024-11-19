@@ -7,14 +7,17 @@ import com.badlogic.gdx.math.Rectangle;
 
 import io.github.kittykaboom.GameMap;
 import io.github.kittykaboom.GameScreen;
+import io.github.kittykaboom.Players.CatPlayer;
 
 public class BasicYarnBall extends YarnBall {
     private GameScreen gameScreen;
+    private CatPlayer player;
 
     //____________ CONSTRUCTOR ____________
     public BasicYarnBall(float x, float y, GameScreen gameScreen) {
         super(x, y, "textures/basic_yarn_ball.png");
         this.gameScreen = gameScreen;
+        this.player = (CatPlayer)gameScreen.getGameMap().getPlayer();
     }
 
     //____________ METHODS ____________
@@ -35,7 +38,8 @@ public class BasicYarnBall extends YarnBall {
         gameScreen.addExplosion(bounds.x, bounds.y);
         affectedArea.add(new Rectangle(bounds.x, bounds.y, cellWidth, cellHeight)); //Centre
     
-
+        // Récupére la portée maximale du joueur
+        int maxPower = ((CatPlayer) player).getMaxYarnBallsPower();
 
         // Vérifie chaque direction pour les murs avant d'ajouter les zones affectées
         if (!gameScreen.isSolidWall(currentCellX, currentCellY + 1)) { // Nord
