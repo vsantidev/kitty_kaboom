@@ -56,9 +56,11 @@ public class CatPlayer extends Player {
 
 
     public boolean placeYarnBall(GameScreen gameScreen) {
+        int col = (int) Math.round(bounds.x / 50) * 50;
+        int row = (int) Math.round(bounds.y / 46) * 46;
         if (yarnBalls.size() < maxYarnBalls) {
             // Créez une nouvelle balle de laine à la position actuelle du joueur
-            YarnBall yarnBall = new BasicYarnBall(bounds.x, bounds.y, gameScreen);
+            YarnBall yarnBall = new BasicYarnBall(col, row, gameScreen);
             yarnBalls.add(yarnBall); // Ajoutez-la à la liste
             return true;
         }

@@ -9,9 +9,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Items.YarnBall.Explosion;
 import io.github.kittykaboom.Items.YarnBall.YarnBall;
 import io.github.kittykaboom.Players.CatPlayer;
@@ -23,8 +26,10 @@ public class GameScreen implements Screen {
     private Viewport viewport;
     private SpriteBatch batch;
     private Player player;
+    private ShapeRenderer shapeRenderer;
     private List<Wall> walls;
     private List<Explosion> explosions = new ArrayList<>();
+    private List<Rectangle> explosionAreas;
 
     private GameMap gameMap;
     
@@ -38,6 +43,7 @@ public class GameScreen implements Screen {
         gameMap = new GameMap("map.txt");
         walls = gameMap.getWalls();
         player = gameMap.getPlayer();
+        shapeRenderer = new ShapeRenderer();
     }
 
     // _________________ METHODS _________________
@@ -46,6 +52,16 @@ public class GameScreen implements Screen {
         explosions.add(new Explosion(x, y));
     }
 
+    // public void handleExplosion(Rectangle explosionArea) {
+    //     // Iterate over walls to check for collisions with the explosion area
+    //     for (Wall wall : new ArrayList<>(walls)) { // Use a copy to avoid concurrent modification issues
+    //         if (wall instanceof SoftWall && wall.getBounds() != null && wall.getBounds().overlaps(explosionArea)) {
+    //             ((SoftWall) wall).destroy(); // Destroy the wall
+    //             walls.remove(wall); // Remove the destroyed wall from the game
+    //         }
+    //     }
+    // }
+
     private void renderExplosions(float delta, SpriteBatch batch) {
         List<Explosion> explosionsToRemove = new ArrayList<>();
         for (Explosion explosion : explosions) {
@@ -53,10 +69,19 @@ public class GameScreen implements Screen {
                 explosionsToRemove.add(explosion); // Explosion terminée
             }
             explosion.render(batch);
+            Rectangle explosionArea = explosion.getBounds(); // Assuming Explosion has a getBounds() method
+            //handleExplosion(explosionArea);
         }
         explosions.removeAll(explosionsToRemove);
     }
 
+    public void handleExplosionImpact(List<Rectangle> affectedAreas) {
+        this.explosionAreas = affectedAreas;
+    }
+
+    public boolean isSolidWall(int cellX, int cellY) {
+        return gameMap.isSolidWall(cellX, cellY);
+    }
     // ========== Show ==========
     @Override
     public void show() {}
@@ -85,6 +110,29 @@ public class GameScreen implements Screen {
         if (player != null) {
             player.render(batch);
         }
+
+        // Rendre les YarnBallUp
+        for (YarnBallUp yarnBallUp : gameMap.getYarnBallUps()) {
+            yarnBallUp.render(batch);
+        }
+
+         // Dessiner les zones d'explosion en rouge
+        // if (explosionAreas != null) {
+        //     //shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        //     //shapeRenderer.setColor(Color.RED);
+
+        //     for (Rectangle area : explosionAreas) {
+        //         shapeRenderer.rect(area.x, area.y, area.width, area.height);
+        //         // float centerX = area.x + area.width / 2;
+        //         // float centerY = area.y + area.height / 2;
+
+        //         // shapeRenderer.line(centerX - area.width / 4, centerY, centerX + area.width / 4, centerY);
+        //     }
+
+        //     shapeRenderer.end();
+        // }
+
+        // Rendu classique de la balle et autres éléments
 
         renderExplosions(delta, batch);
 
@@ -127,6 +175,9 @@ public class GameScreen implements Screen {
         if (player != null && player.getTexture() != null) {
             player.getTexture().dispose();
         }
+
+        shapeRenderer.dispose();
+
     }
 
 
@@ -155,7 +206,7 @@ public class GameScreen implements Screen {
         }
 
         // Debug : Affiche les valeurs de dx et dy
-        System.out.println("dx: " + dx + ", dy: " + dy);
+        // System.out.println("dx: " + dx + ", dy: " + dy);
 
         // Enregistrer la position actuelle du joueur pour restaurer en cas de collision
         float originalX = player.getBounds().x;
@@ -191,6 +242,19 @@ public class GameScreen implements Screen {
         if (collided) {
             player.move(-dx, -dy);
         }
+
+            // Vérifiez les collisions avec YarnBallUp
+    List<YarnBallUp> itemsToRemove = new ArrayList<>();
+    for (YarnBallUp yarnBallUp : gameMap.getYarnBallUps()) {
+        if (player.getBounds().overlaps(yarnBallUp.getBounds())) {
+            ((CatPlayer) player).increaseMaxYarnBalls(); // Augmenter la capacité du joueur
+            itemsToRemove.add(yarnBallUp); // Supprimer l’item
+            System.out.println("Collected YarnBallUp! Max YarnBalls: " + ((CatPlayer) player).getMaxYarnBalls());
+        }
+    }
+
+    // Retirez les items ramassés
+    gameMap.getYarnBallUps().removeAll(itemsToRemove);
 
         // Met à jour les balles de laine et leur explosion
         ((CatPlayer) player).update(delta);
