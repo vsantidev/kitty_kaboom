@@ -81,7 +81,7 @@ public class GameScreen implements Screen {
     }
 
     public boolean isSolidWall(int cellX, int cellY) {
-        return gameMap.isSolidWall(cellX, cellY);
+        return gameMap.isSolidWall(cellX, cellY, false);
     }
 
     // Méthode pour vérifier si le jeu est terminé
@@ -99,6 +99,7 @@ public class GameScreen implements Screen {
         System.out.println("Restarting game...");
         main.setScreen(new GameScreen()); // Réinitialise l'écran
     }
+    
     
 
 

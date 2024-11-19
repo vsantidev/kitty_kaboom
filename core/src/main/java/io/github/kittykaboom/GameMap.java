@@ -55,7 +55,7 @@ public class GameMap {
 
     
 
-    public boolean isSolidWall(int cellX, int cellY) {
+    public boolean isSolidWall(int cellX, int cellY, boolean  destroyIfDestructible) {
         // System.out.println("cell X:");
         // System.out.println(cellX);
         // System.out.println("cell Y:");
@@ -73,22 +73,42 @@ public class GameMap {
         
         // System.out.println("Explosion:");
         // Parcourt la liste des murs pour vérifier les collisions
-        for (Wall wall : walls) {
-            if (wall.getBounds().x == wallX && wall.getBounds().y == wallY) {
-                // System.out.println("Wall Trouvé");
+        // for (Wall wall : walls) {
+        //     if (wall.getBounds().x == wallX && wall.getBounds().y == wallY) {
+        //         // System.out.println("Wall Trouvé");
 
-                if (wall.isDestructible()){
-                    System.out.println("petable");
-                    walls.remove(wall);
-                }
-                return true; // Mur trouvé
-            }
+        //         if (wall.isDestructible()){
+        //             System.out.println("petable");
+        //             walls.remove(wall);
+        //         }
+        //         return true; // Mur trouvé
+        //     }
 
         
             
 
-            // System.out.println(wall.getBounds().x);
-            // System.out.println(wall.getBounds().y);
+        //     // System.out.println(wall.getBounds().x);
+        //     // System.out.println(wall.getBounds().y);
+        // }
+
+        // return false; // Pas de mur à cet emplacement
+
+
+
+        // ___ Nouvelle version ___
+        for (int i = 0; i < walls.size(); i++) {
+            Wall wall = walls.get(i);
+            if (wall.getBounds().x == wallX && wall.getBounds().y == wallY) {
+                if (wall.isDestructible()) {
+                    if (destroyIfDestructible) {
+                        System.out.println("SoftWall détruit !");
+                        walls.remove(i); // Supprime le mur destructible
+                    }
+                    return false; // Considére les SoftWalls comme non solides si elles sont détruites
+                }
+                System.out.println("SolidWall détecté");
+                return true;
+            }
         }
 
         return false; // Pas de mur à cet emplacement
