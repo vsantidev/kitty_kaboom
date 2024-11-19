@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Rectangle;
 
+import io.github.kittykaboom.Items.Special.YarnBallPower;
 import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
@@ -19,6 +20,7 @@ public class GameMap {
     // private List<String> mapLines = new ArrayList<>();
     private List<Wall> walls = new ArrayList<>();
     private List<YarnBallUp> yarnBallUp = new ArrayList<>();
+    private List<YarnBallPower> yarnBallPower = new ArrayList<>();
     private Player player;
 
 
@@ -112,7 +114,7 @@ public class GameMap {
                         case 'x':
                             walls.add(new SolidWall(x, y));
                             break;
-                        case 's': // Soft wall
+                        case 's':
                             walls.add(new SoftWall(x, y));
                             break;
                         case 'p':
@@ -121,7 +123,9 @@ public class GameMap {
                         case 'u':
                             yarnBallUp.add(new YarnBallUp(x, y));
                             break;
-                        // Ajoutez d’autres cases pour d’autres éléments
+                        case 'f':
+                            yarnBallPower.add(new YarnBallPower(x, y));
+                            break;
                     }
                 }
                 row++;
@@ -131,6 +135,8 @@ public class GameMap {
         }
     }
     
+
+
     public List<Wall> getWalls() {
         return walls;
     }
@@ -141,6 +147,10 @@ public class GameMap {
 
     public List<YarnBallUp> getYarnBallUps() {
         return yarnBallUp;
+    }
+
+    public List<YarnBallPower> getYarnBallPowers() {
+        return yarnBallPower;
     }
 
 
