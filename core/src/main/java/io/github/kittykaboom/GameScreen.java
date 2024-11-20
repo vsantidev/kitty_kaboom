@@ -1,7 +1,9 @@
 package io.github.kittykaboom;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.kittykaboom.Items.Special.YarnBallPower;
 import io.github.kittykaboom.Items.Special.YarnBallUp;
+import io.github.kittykaboom.Items.Special.Mouse;
 import io.github.kittykaboom.Items.YarnBall.Explosion;
 import io.github.kittykaboom.Items.YarnBall.YarnBall;
 import io.github.kittykaboom.Players.CatPlayer;
@@ -32,6 +35,7 @@ public class GameScreen implements Screen {
     private Main main;
     private boolean gameOver = false;
     private List<Wall> walls;
+    private List<Mouse> mice;
     private List<Explosion> explosions = new ArrayList<>();
     private List<Rectangle> explosionAreas;
 
@@ -119,6 +123,7 @@ public class GameScreen implements Screen {
         camera.position.set((GameMap.getTotalCols() * GameMap.getCellWidth()) / 2f, (GameMap.getTotalRows() * GameMap.getCellHeight()) / 2f, 0);
         camera.update(); // Met à jour la caméra
         batch.setProjectionMatrix(camera.combined); // Définit la matrice de projection
+        
 
     if (gameOver) {
         // Efface l'écran
@@ -162,6 +167,10 @@ public class GameScreen implements Screen {
         // Dessin des YarnBallPower
         for (YarnBallPower yarnBallPower : gameMap.getYarnBallPowers()) {
             yarnBallPower.render(batch);
+        }
+
+        for (Mouse Mouse: gameMap.getMice()) {
+            Mouse.render(batch);
         }
 
         renderExplosions(delta, batch);
@@ -254,6 +263,11 @@ public class GameScreen implements Screen {
             }
         }
 
+        // Si une collision est détectée, rétablissez la position initiale
+        if (collided) {
+            player.move(-dx, -dy);
+        }
+
         // Vérifie la collision entre le joueur et chaque boule de laine
         boolean collidedWithYarnBall = false;
         for (YarnBall yarnBall : ((CatPlayer) player).getYarnBalls()) {
@@ -267,10 +281,6 @@ public class GameScreen implements Screen {
             player.move(-dx, -dy);
         }
 
-        // Si une collision est détectée, rétablissez la position initiale
-        if (collided) {
-            player.move(-dx, -dy);
-        }
         // Vérifiez les collisions avec YarnBallUp
         List<YarnBallUp> itemsToRemoveUps = new ArrayList<>();
         for (YarnBallUp yarnBallUp : gameMap.getYarnBallUps()) {
@@ -291,9 +301,22 @@ public class GameScreen implements Screen {
             }
         }
 
+        List<Mouse> itemsToRemoveMice = new ArrayList<>();
+        for (Mouse mouse : gameMap.getMice()) {
+            if (player.getBounds().overlaps(mouse.getBounds())) {
+                mouse.activate((CatPlayer) player); // Apply the speed boost
+                itemsToRemoveMice.add(mouse); // Mark the mouse item for removal
+                System.out.println("Collected Mouse! Speed Boost! " + ((CatPlayer) player).getSpeed());
+            }
+        }
+        
+        gameMap.checkMouseCollisions((CatPlayer) gameMap.getPlayer());
+
+
         // Retirez les items ramassés
         gameMap.getYarnBallUps().removeAll(itemsToRemoveUps);
         gameMap.getYarnBallPowers().removeAll(itemsToRemovePowers);
+        gameMap.getMice().removeAll(itemsToRemoveMice);
         // Met à jour les balles de laine et leur explosion
         ((CatPlayer) player).update(delta);
 
