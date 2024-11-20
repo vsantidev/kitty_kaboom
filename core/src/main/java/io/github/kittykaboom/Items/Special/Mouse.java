@@ -1,49 +1,57 @@
 package io.github.kittykaboom.Items.Special;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
+import io.github.kittykaboom.Functionality.TextureManager;
+import io.github.kittykaboom.GameMap;
 import io.github.kittykaboom.Players.CatPlayer;
 
-public class Mouse extends Special {
-    private float speedBoost;
-    private float duration; // Duration in seconds
-    private boolean isEffectActive;
-    private float elapsedTime;
+public class Mouse {
+    private Texture texture;
+    private Rectangle bounds;
+    private float x, y;
+    private float speedBoost = 100; // Speed increase for the CatPlayer
+    private float duration = 5; // Duration of the speed boost
+    private boolean isActive = false;
+    private float activeTime = 0;
 
-    // Constructor
-    public Mouse(String texturePath, float x, float y, float width, float height, float speedBoost, float duration) {
-        super(texturePath, x, y, width, height);
-        this.speedBoost = speedBoost;
-        this.duration = duration;
-        this.isEffectActive = false;
-        this.elapsedTime = 0;
+    //____________ CONSTRUCTOR ____________
+    public Mouse(float x, float y) {
+        this.texture = TextureManager.getTexture("textures/mouse.png");
+        this.bounds = new Rectangle(x, y, GameMap.getCellWidth(), GameMap.getCellHeight());
     }
 
-    @Override
-    public void applyEffect(CatPlayer player) {
-        if (!isEffectActive) {
-            player.setSpeed(player.getSpeed() + speedBoost); // Increase speed
-            isEffectActive = true;
-            elapsedTime = 0; // Reset elapsed time
+    //____________ METHODS ____________
+
+    public void render(SpriteBatch batch) {
+        batch.draw(texture, bounds.x, bounds.y, bounds.width, bounds.height);
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
+    public void activate(CatPlayer catPlayer) {
+        if (!isActive) {
+            catPlayer.setSpeed(catPlayer.getSpeed() + speedBoost);
+            isActive = true;
         }
     }
 
-    public void update(float delta, CatPlayer player) {
-        if (isEffectActive) {
-            elapsedTime += delta;
-
-            // Revert the speed boost after the duration ends
-            if (elapsedTime >= duration) {
-                player.setSpeed(player.getSpeed() - speedBoost); // Revert speed
-                isEffectActive = false;
+    public void update(float delta, CatPlayer catPlayer) {
+        if (isActive) {
+            activeTime += delta;
+            if (activeTime >= duration) {
+                catPlayer.setSpeed(catPlayer.getSpeed() - speedBoost);
+                isActive = false;
+                activeTime = 0;
             }
         }
     }
-
-    @Override
-    public void render(SpriteBatch batch) {
-        if (!isEffectActive) {
-            super.render(batch); // Render the item only if it hasn't been collected
-        }
+    public void dispose() {
+        texture.dispose();
     }
 }
+    

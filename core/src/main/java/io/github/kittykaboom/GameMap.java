@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
+
 
 import com.badlogic.gdx.math.Rectangle;
 
@@ -49,14 +51,10 @@ public class GameMap {
         return TOTAL_COLS;
     }
 
-
-
-
     public GameMap(String mapFilePath) {
         loadMap(mapFilePath);
     }
 
-    
     public List<Mouse> getMice() {
         return mice;
     }
@@ -64,7 +62,6 @@ public class GameMap {
     public List<CatPlayer> getPlayers() {
         return players;
     }
-
     public boolean isSolidWall(int cellX, int cellY, boolean  destroyIfDestructible) {
         // System.out.println("cell X:");
         // System.out.println(cellX);
@@ -130,7 +127,7 @@ public class GameMap {
                             yarnBallPower.add(new YarnBallPower(x, y));
                             break;
                         case 'm': 
-                            mice.add(new Mouse("textures/mouse.png", x, y, 32, 32, 1.5f, 5)); // Example values
+                            mice.add(new Mouse(x, y));
                             break;
                         // Ajoutez d’autres cases pour d’autres éléments
                     }
@@ -160,17 +157,23 @@ public class GameMap {
         return yarnBallPower;
     }
 
+    public List<Mouse> getMice() {
+        return mice;
+    }
+
     public void checkMouseCollisions(CatPlayer player) {
-        List<Mouse> collectedMice = new ArrayList<>();
-        for (Mouse mouse : mice) {
+        Iterator<Mouse> iterator = mice.iterator(); // Assuming you have a List<Mouse> called `mice`
+
+        while (iterator.hasNext()) {
+            Mouse mouse = iterator.next();
+
             if (mouse.getBounds().overlaps(player.getBounds())) {
-                mouse.applyEffect(player);
-                collectedMice.add(mouse); // Mark for removal
+                mouse.activate(player); // Apply any effects from the mouse
+                iterator.remove(); // Remove the mouse from the game after collision
+                System.out.println("Mouse collected! Speed Boost applied.");
             }
         }
-        mice.removeAll(collectedMice); // Remove collected items from the game
     }
-    
 
     public boolean isPlayerHit(List<Rectangle> explosionAreas) {
     /*Rectangle playerBounds = player.getBounds(); // Supposons que votre joueur a une méthode getBounds()

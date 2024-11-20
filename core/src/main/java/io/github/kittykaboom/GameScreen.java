@@ -1,7 +1,9 @@
 package io.github.kittykaboom;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.kittykaboom.Items.Special.YarnBallPower;
 import io.github.kittykaboom.Items.Special.YarnBallUp;
+import io.github.kittykaboom.Items.Special.Mouse;
 import io.github.kittykaboom.Items.YarnBall.Explosion;
 import io.github.kittykaboom.Items.YarnBall.YarnBall;
 import io.github.kittykaboom.Players.CatPlayer;
@@ -37,6 +40,7 @@ public class GameScreen implements Screen {
     
     private boolean gameOver = false;
     private List<Wall> walls;
+    private List<Mouse> mice;
     private List<Explosion> explosions = new ArrayList<>();
     private List<Rectangle> explosionAreas;
     private List<CatPlayer> players;
@@ -238,6 +242,7 @@ public class GameScreen implements Screen {
         camera.position.set((GameMap.getTotalCols() * GameMap.getCellWidth()) / 2f, (GameMap.getTotalRows() * GameMap.getCellHeight()) / 2f, 0);
         camera.update(); // Met à jour la caméra
         batch.setProjectionMatrix(camera.combined); // Définit la matrice de projection
+        
 
         if (transitioningToGameOver) {
             gameOverDelay -= delta;
@@ -296,6 +301,10 @@ public class GameScreen implements Screen {
         // Rendu des YarnBallPower
         for (YarnBallPower yarnBallPower : gameMap.getYarnBallPowers()) {
             yarnBallPower.render(batch);
+        }
+
+        for (Mouse Mouse: gameMap.getMice()) {
+            Mouse.render(batch);
         }
 
         renderExplosions(delta, batch);
@@ -412,10 +421,22 @@ public class GameScreen implements Screen {
         }
 
 
+        List<Mouse> itemsToRemoveMice = new ArrayList<>();
+        for (Mouse mouse : gameMap.getMice()) {
+            if (player.getBounds().overlaps(mouse.getBounds())) {
+                mouse.activate((CatPlayer) player); // Apply the speed boost
+                itemsToRemoveMice.add(mouse); // Mark the mouse item for removal
+                System.out.println("Collected Mouse! Speed Boost! " + ((CatPlayer) player).getSpeed());
+            }
+        }
+        
+        //gameMap.checkMouseCollisions((CatPlayer) gameMap.getPlayer());
+
 
         // Retirez les items ramassés
         gameMap.getYarnBallUps().removeAll(itemsToRemoveUps);
         gameMap.getYarnBallPowers().removeAll(itemsToRemovePowers);
+        gameMap.getMice().removeAll(itemsToRemoveMice);
 
 
     }
