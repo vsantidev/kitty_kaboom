@@ -9,6 +9,7 @@ import java.util.List;
 import com.badlogic.gdx.math.Rectangle;
 
 import io.github.kittykaboom.Items.Special.YarnBallPower;
+import io.github.kittykaboom.Items.Special.Mouse;
 import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
@@ -21,6 +22,7 @@ public class GameMap {
     private List<Wall> walls = new ArrayList<>();
     private List<YarnBallUp> yarnBallUp = new ArrayList<>();
     private List<YarnBallPower> yarnBallPower = new ArrayList<>();
+    private List<Mouse> mice = new ArrayList<>();
     private Player player;
 
 
@@ -54,6 +56,9 @@ public class GameMap {
     }
 
     
+    public List<Mouse> getMice() {
+        return mice;
+    }
 
     public boolean isSolidWall(int cellX, int cellY, boolean  destroyIfDestructible) {
         // System.out.println("cell X:");
@@ -146,6 +151,10 @@ public class GameMap {
                         case 'f':
                             yarnBallPower.add(new YarnBallPower(x, y));
                             break;
+                        case 'm': 
+                            mice.add(new Mouse("textures/mouse.png", x, y, 32, 32, 1.5f, 5)); // Example values
+                            break;
+                        // Ajoutez d’autres cases pour d’autres éléments
                     }
                 }
                 row++;
@@ -173,6 +182,17 @@ public class GameMap {
         return yarnBallPower;
     }
 
+    public void checkMouseCollisions(CatPlayer player) {
+        List<Mouse> collectedMice = new ArrayList<>();
+        for (Mouse mouse : mice) {
+            if (mouse.getBounds().overlaps(player.getBounds())) {
+                mouse.applyEffect(player);
+                collectedMice.add(mouse); // Mark for removal
+            }
+        }
+        mice.removeAll(collectedMice); // Remove collected items from the game
+    }
+    
 
     public boolean isPlayerHit(List<Rectangle> explosionAreas) {
     Rectangle playerBounds = player.getBounds(); // Supposons que votre joueur a une méthode getBounds()
