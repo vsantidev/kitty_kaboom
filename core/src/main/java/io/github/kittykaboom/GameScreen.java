@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.kittykaboom.Items.Special.YarnBallPower;
 import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Items.YarnBall.Explosion;
 import io.github.kittykaboom.Items.YarnBall.YarnBall;
@@ -80,7 +81,7 @@ public class GameScreen implements Screen {
     }
 
     public boolean isSolidWall(int cellX, int cellY) {
-        return gameMap.isSolidWall(cellX, cellY);
+        return gameMap.isSolidWall(cellX, cellY, false);
     }
 
     // Méthode pour vérifier si le jeu est terminé
@@ -98,6 +99,7 @@ public class GameScreen implements Screen {
         System.out.println("Restarting game...");
         main.setScreen(new GameScreen()); // Réinitialise l'écran
     }
+    
     
 
 
@@ -152,9 +154,14 @@ public class GameScreen implements Screen {
             player.render(batch);
         }
 
-        // Rendre les YarnBallUp
+        // Dessin des YarnBallUp
         for (YarnBallUp yarnBallUp : gameMap.getYarnBallUps()) {
             yarnBallUp.render(batch);
+        }
+
+        // Dessin des YarnBallPower
+        for (YarnBallPower yarnBallPower : gameMap.getYarnBallPowers()) {
+            yarnBallPower.render(batch);
         }
 
         renderExplosions(delta, batch);
@@ -264,20 +271,29 @@ public class GameScreen implements Screen {
         if (collided) {
             player.move(-dx, -dy);
         }
-
         // Vérifiez les collisions avec YarnBallUp
-        List<YarnBallUp> itemsToRemove = new ArrayList<>();
+        List<YarnBallUp> itemsToRemoveUps = new ArrayList<>();
         for (YarnBallUp yarnBallUp : gameMap.getYarnBallUps()) {
             if (player.getBounds().overlaps(yarnBallUp.getBounds())) {
                 ((CatPlayer) player).increaseMaxYarnBalls(); // Augmenter la capacité du joueur
-                itemsToRemove.add(yarnBallUp); // Supprimer l’item
+                itemsToRemoveUps.add(yarnBallUp); // Ajoute l'item à supprimer
                 System.out.println("Collected YarnBallUp! Max YarnBalls: " + ((CatPlayer) player).getMaxYarnBalls());
             }
         }
 
-        // Retirez les items ramassés
-        gameMap.getYarnBallUps().removeAll(itemsToRemove);
+        // Vérifiez les collisions avec YarnBallPower
+        List<YarnBallPower> itemsToRemovePowers = new ArrayList<>();
+        for (YarnBallPower yarnBallPower : gameMap.getYarnBallPowers()) {
+            if (player.getBounds().overlaps(yarnBallPower.getBounds())) {
+                ((CatPlayer) player).increaseMaxYarnBallsPower(); // Augmente la puissance du joueur
+                itemsToRemovePowers.add(yarnBallPower); // Ajoute l'item à supprimer
+                System.out.println("Collected YarnBall POWER! Max YarnPOWER: " + ((CatPlayer) player).getMaxYarnBallsPower());
+            }
+        }
 
+        // Retirez les items ramassés
+        gameMap.getYarnBallUps().removeAll(itemsToRemoveUps);
+        gameMap.getYarnBallPowers().removeAll(itemsToRemovePowers);
         // Met à jour les balles de laine et leur explosion
         ((CatPlayer) player).update(delta);
 

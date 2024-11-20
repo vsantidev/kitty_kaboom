@@ -19,6 +19,7 @@ public class CatPlayer extends Player {
     private Rectangle bounds;
     private List<YarnBall> yarnBalls;
     private int maxYarnBalls = 1;
+    private int maxYarnBallsPower = 1;
     private float speed = 200; 
 
     //____________ CONSTRUCTOR ____________
@@ -47,6 +48,10 @@ public class CatPlayer extends Player {
 
     public int getMaxYarnBalls(){
         return maxYarnBalls;
+    }
+
+    public int getMaxYarnBallsPower(){
+        return maxYarnBallsPower;
     }
 
 
@@ -98,9 +103,15 @@ public class CatPlayer extends Player {
         maxYarnBalls++;
     }
 
+
+    public void increaseMaxYarnBallsPower() {
+        maxYarnBallsPower++;
+    }
+
     public float getSpeed() {
         return speed;
     }
+
 
     //____________ SETTER ABSTRACT ____________
     @Override

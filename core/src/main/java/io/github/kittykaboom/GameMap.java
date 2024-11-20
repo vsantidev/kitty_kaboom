@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Rectangle;
 
+import io.github.kittykaboom.Items.Special.YarnBallPower;
 import io.github.kittykaboom.Items.Special.Mouse;
 import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Players.CatPlayer;
@@ -20,6 +21,7 @@ public class GameMap {
     // private List<String> mapLines = new ArrayList<>();
     private List<Wall> walls = new ArrayList<>();
     private List<YarnBallUp> yarnBallUp = new ArrayList<>();
+    private List<YarnBallPower> yarnBallPower = new ArrayList<>();
     private List<Mouse> mice = new ArrayList<>();
     private Player player;
 
@@ -58,7 +60,7 @@ public class GameMap {
         return mice;
     }
 
-    public boolean isSolidWall(int cellX, int cellY) {
+    public boolean isSolidWall(int cellX, int cellY, boolean  destroyIfDestructible) {
         // System.out.println("cell X:");
         // System.out.println(cellX);
         // System.out.println("cell Y:");
@@ -76,22 +78,42 @@ public class GameMap {
         
         // System.out.println("Explosion:");
         // Parcourt la liste des murs pour vérifier les collisions
-        for (Wall wall : walls) {
-            if (wall.getBounds().x == wallX && wall.getBounds().y == wallY) {
-                // System.out.println("Wall Trouvé");
+        // for (Wall wall : walls) {
+        //     if (wall.getBounds().x == wallX && wall.getBounds().y == wallY) {
+        //         // System.out.println("Wall Trouvé");
 
-                if (wall.isDestructible()){
-                    System.out.println("petable");
-                    walls.remove(wall);
-                }
-                return true; // Mur trouvé
-            }
+        //         if (wall.isDestructible()){
+        //             System.out.println("petable");
+        //             walls.remove(wall);
+        //         }
+        //         return true; // Mur trouvé
+        //     }
 
         
             
 
-            // System.out.println(wall.getBounds().x);
-            // System.out.println(wall.getBounds().y);
+        //     // System.out.println(wall.getBounds().x);
+        //     // System.out.println(wall.getBounds().y);
+        // }
+
+        // return false; // Pas de mur à cet emplacement
+
+
+
+        // ___ Nouvelle version ___
+        for (int i = 0; i < walls.size(); i++) {
+            Wall wall = walls.get(i);
+            if (wall.getBounds().x == wallX && wall.getBounds().y == wallY) {
+                if (wall.isDestructible()) {
+                    if (destroyIfDestructible) {
+                        System.out.println("SoftWall détruit !");
+                        walls.remove(i); // Supprime le mur destructible
+                    }
+                    return false; // Considére les SoftWalls comme non solides si elles sont détruites
+                }
+                System.out.println("SolidWall détecté");
+                return true;
+            }
         }
 
         return false; // Pas de mur à cet emplacement
@@ -117,7 +139,7 @@ public class GameMap {
                         case 'x':
                             walls.add(new SolidWall(x, y));
                             break;
-                        case 's': // Soft wall
+                        case 's':
                             walls.add(new SoftWall(x, y));
                             break;
                         case 'p':
@@ -125,6 +147,9 @@ public class GameMap {
                             break;
                         case 'u':
                             yarnBallUp.add(new YarnBallUp(x, y));
+                            break;
+                        case 'f':
+                            yarnBallPower.add(new YarnBallPower(x, y));
                             break;
                         case 'm': 
                             mice.add(new Mouse("textures/mouse.png", x, y, 32, 32, 1.5f, 5)); // Example values
@@ -139,6 +164,8 @@ public class GameMap {
         }
     }
     
+
+
     public List<Wall> getWalls() {
         return walls;
     }
@@ -149,6 +176,10 @@ public class GameMap {
 
     public List<YarnBallUp> getYarnBallUps() {
         return yarnBallUp;
+    }
+
+    public List<YarnBallPower> getYarnBallPowers() {
+        return yarnBallPower;
     }
 
     public void checkMouseCollisions(CatPlayer player) {
