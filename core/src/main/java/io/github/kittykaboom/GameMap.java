@@ -8,8 +8,8 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Rectangle;
 
-import io.github.kittykaboom.Items.Special.YarnBallPower;
 import io.github.kittykaboom.Items.Special.Mouse;
+import io.github.kittykaboom.Items.Special.YarnBallPower;
 import io.github.kittykaboom.Items.Special.YarnBallUp;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Players.Player;
@@ -23,6 +23,7 @@ public class GameMap {
     private List<YarnBallUp> yarnBallUp = new ArrayList<>();
     private List<YarnBallPower> yarnBallPower = new ArrayList<>();
     private List<Mouse> mice = new ArrayList<>();
+    private List<CatPlayer> players = new ArrayList<>();
     private Player player;
 
 
@@ -60,46 +61,21 @@ public class GameMap {
         return mice;
     }
 
+    public List<CatPlayer> getPlayers() {
+        return players;
+    }
+
     public boolean isSolidWall(int cellX, int cellY, boolean  destroyIfDestructible) {
         // System.out.println("cell X:");
         // System.out.println(cellX);
         // System.out.println("cell Y:");
         // System.out.println(cellY);
         // Convertit les indices de cellule en coordonnées en pixels
-         int wallX = cellX * CELL_WIDTH;
-      
-        // System.out.println("wall X:");
-        // System.out.println(wallX);
-
- 
+        int wallX = cellX * CELL_WIDTH;
         int wallY = (TOTAL_ROWS - cellY - 1) * CELL_HEIGHT; // Coordonnées inversées
         // System.out.println("wall y:");
-        // System.out.println(wallY);
-        
+        // System.out.println(wallY);        
         // System.out.println("Explosion:");
-        // Parcourt la liste des murs pour vérifier les collisions
-        // for (Wall wall : walls) {
-        //     if (wall.getBounds().x == wallX && wall.getBounds().y == wallY) {
-        //         // System.out.println("Wall Trouvé");
-
-        //         if (wall.isDestructible()){
-        //             System.out.println("petable");
-        //             walls.remove(wall);
-        //         }
-        //         return true; // Mur trouvé
-        //     }
-
-        
-            
-
-        //     // System.out.println(wall.getBounds().x);
-        //     // System.out.println(wall.getBounds().y);
-        // }
-
-        // return false; // Pas de mur à cet emplacement
-
-
-
         // ___ Nouvelle version ___
         for (int i = 0; i < walls.size(); i++) {
             Wall wall = walls.get(i);
@@ -143,7 +119,9 @@ public class GameMap {
                             walls.add(new SoftWall(x, y));
                             break;
                         case 'p':
-                            player = new CatPlayer(x, y);
+                            String texturePath = players.isEmpty() ? "textures/cat_one.png" : "textures/cat_two.png";
+                            CatPlayer newPlayer = new CatPlayer(x, y, texturePath);
+                            players.add(newPlayer);
                             break;
                         case 'u':
                             yarnBallUp.add(new YarnBallUp(x, y));
@@ -195,16 +173,14 @@ public class GameMap {
     
 
     public boolean isPlayerHit(List<Rectangle> explosionAreas) {
-    Rectangle playerBounds = player.getBounds(); // Supposons que votre joueur a une méthode getBounds()
+    /*Rectangle playerBounds = player.getBounds(); // Supposons que votre joueur a une méthode getBounds()
 
         for (Rectangle area : explosionAreas) {
             if (playerBounds.overlaps(area)) {
                 return true; // Le joueur est touché
             }
-        }
+        }*/
 
         return false; // Le joueur n'est pas dans la zone d'explosion
     }
-
-    
 }
