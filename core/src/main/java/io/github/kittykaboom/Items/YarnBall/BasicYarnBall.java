@@ -11,20 +11,30 @@ import io.github.kittykaboom.Players.CatPlayer;
 
 public class BasicYarnBall extends YarnBall {
     private GameScreen gameScreen;
-    private CatPlayer player;
+    private CatPlayer owner;
 
     //____________ CONSTRUCTOR ____________
-    public BasicYarnBall(float x, float y, GameScreen gameScreen) {
+    public BasicYarnBall(float x, float y, GameScreen gameScreen, CatPlayer owner) {
         super(x, y, "textures/basic_yarn_ball.png");
         this.gameScreen = gameScreen;
-        this.player = (CatPlayer)gameScreen.getGameMap().getPlayer();
+        this.owner = owner;
     }
 
     //____________ METHODS ____________
 
     @Override
     public void explode() {
+        // if (player == null) {
+        //     System.out.println("Error: Player is null in explode!");
+        //     return;
+        // }
         // Liste des positions touchées (nord, sud, est, ouest)
+        
+        if (gameScreen.getPlayers() == null || gameScreen.getPlayers().isEmpty()) {
+            System.out.println("Error: No players in game!");
+            return;
+        }
+        
         List<Rectangle> affectedArea = new ArrayList<>();
 
         // Taille de chaque cellule
@@ -39,7 +49,18 @@ public class BasicYarnBall extends YarnBall {
         affectedArea.add(new Rectangle(bounds.x, bounds.y, cellWidth, cellHeight)); //Centre
     
         // Récupère la portée maximale du joueur
-        int maxPower = player.getMaxYarnBallsPower();
+        int maxPower = owner.getMaxYarnBallsPower();
+
+
+        // for (CatPlayer player : gameScreen.getPlayers()) {
+        //     for (Rectangle area : affectedArea) {
+        //         if (player.getBounds().overlaps(area)) {
+        //             System.out.println("Player hit by explosion: " + player);
+        //             gameScreen.endGame();
+        //             return;
+        //         }
+        //     }
+        // }
 
         // _____________ Première étape d'explosion _____________
         // Vérifie chaque direction pour les murs avant d'ajouter les zones affectées
@@ -127,9 +148,18 @@ public class BasicYarnBall extends YarnBall {
         }
 
         // Vérifie si le chat est touché
-        if (gameScreen.getGameMap().isPlayerHit(affectedArea)) {
+        /*if (gameScreen.getGameMap().isPlayerHit(affectedArea)) {
             System.out.println("Game Over! The player was hit by the explosion.");
             gameScreen.endGame(); // Terminer la partie
+        }*/
+        for (CatPlayer player : gameScreen.getPlayers()) {
+            for (Rectangle area : affectedArea) {
+                if (player.getBounds().overlaps(area)) {
+                    System.out.println("Player hit by explosion: " + player);
+                    gameScreen.endGame(player);
+                    return;
+                }
+            }
         }
 
 
