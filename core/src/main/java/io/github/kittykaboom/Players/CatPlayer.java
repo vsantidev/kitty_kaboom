@@ -3,6 +3,7 @@ package io.github.kittykaboom.Players;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,6 +19,7 @@ public class CatPlayer extends Player {
     private Rectangle bounds;
     private List<YarnBall> yarnBalls;
     private int maxYarnBalls = 1;
+    private float speed = 200; 
 
     //____________ CONSTRUCTOR ____________
     public CatPlayer(float x, float y) {
@@ -48,8 +50,11 @@ public class CatPlayer extends Player {
     }
 
 
-    //____________ METHODS ____________    
+    //____________ METHODS ____________  
+    @Override  
     public void move(float dx, float dy) {
+        float deltaX = dx * speed * Gdx.graphics.getDeltaTime();
+        float deltaY = dy * speed * Gdx.graphics.getDeltaTime();
         playerSprite.translate(dx, dy);
         bounds.setPosition(playerSprite.getX(), playerSprite.getY()); // Met à jour les limites
     }
@@ -93,6 +98,9 @@ public class CatPlayer extends Player {
         maxYarnBalls++;
     }
 
+    public float getSpeed() {
+        return speed;
+    }
 
     //____________ SETTER ABSTRACT ____________
     @Override
@@ -102,6 +110,10 @@ public class CatPlayer extends Player {
         }
         this.texture = texture;
         this.playerSprite.setTexture(texture);
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     //____________ METHODS ABSTRACT ____________
