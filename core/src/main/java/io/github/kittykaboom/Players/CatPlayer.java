@@ -39,6 +39,7 @@ public class CatPlayer extends Player {
         
         // Initialise la liste de balle de laine
         this.yarnBalls = new ArrayList<>();
+        
     }
 
     //____________ GETTERS & SETTERS ____________
