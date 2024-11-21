@@ -1,15 +1,15 @@
 xxxxxxxxxxxxxxx
-xp      s     x
+xp s s  s     x
 x x x x xsx x x
-x   s   sfs   x 
+xs  s   s s   x 
 x x x x xsx x x
-x    s   m s  x
+x s  s ss  s  x
 x x x x x x x x
-x    u   f    x
+x    s  s     x
 x x x x x xsxsx
-x   m     sussx
+x  s sss  s ssx
 x x x x xsxsx x
-x   sfs  sss px
+x   s s  s s px
 xxxxxxxxxxxxxxx
 
 

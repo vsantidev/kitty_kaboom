@@ -1,15 +1,14 @@
 package io.github.kittykaboom;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -17,9 +16,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.kittykaboom.Items.Special.Mouse;
 import io.github.kittykaboom.Items.Special.YarnBallPower;
 import io.github.kittykaboom.Items.Special.YarnBallUp;
-import io.github.kittykaboom.Items.Special.Mouse;
 import io.github.kittykaboom.Items.YarnBall.Explosion;
 import io.github.kittykaboom.Items.YarnBall.YarnBall;
 import io.github.kittykaboom.Players.CatPlayer;
@@ -32,6 +31,7 @@ public class GameScreen implements Screen {
 
     private ShapeRenderer shapeRenderer;
     private Main main;
+    private Texture gameOverBackground;
 
     private CatPlayer loser;
     private CatPlayer winner;
@@ -52,7 +52,7 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         viewport = new FitViewport(800, 600, camera);
         batch = new SpriteBatch();
-
+        gameOverBackground = new Texture("textures/game_over_background.png"); // Texture personnalisée
         // Initialise la carte
         gameMap = new GameMap("map.txt");
         walls = gameMap.getWalls();
@@ -255,8 +255,9 @@ public class GameScreen implements Screen {
         if (gameOver) {
             // Efface l'écran
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+            Gdx.gl.glClearColor(0.0f, 0.7f, 0.0f, 1.0f);
             batch.begin();
+            batch.draw(gameOverBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Texture en plein écran
             // Affiche le message Game Over
             BitmapFont font = new BitmapFont();
             font.getData().setScale(2);
@@ -395,6 +396,11 @@ public class GameScreen implements Screen {
 
             // Mise à jour des balles de laine
             player.update(delta);
+
+                        // Mettez à jour les souris
+            // for (Mouse mouse : gameMap.getMice()) {
+            //     mouse.update(delta); // Vérifie les boosts actifs
+            // }
         }
 
 
@@ -409,7 +415,7 @@ public class GameScreen implements Screen {
             }
         }
 
-        // Vérifiez les collisions avec YarnBallPower
+        // Gérer les collisions avec YarnBallPower
         List<YarnBallPower> itemsToRemovePowers = new ArrayList<>();
         for (YarnBallPower yarnBallPower : gameMap.getYarnBallPowers()) {
             for (CatPlayer player : players) {
@@ -421,12 +427,17 @@ public class GameScreen implements Screen {
         }
 
 
+
+        // Gérer les collisions avec les souris
         List<Mouse> itemsToRemoveMice = new ArrayList<>();
         for (Mouse mouse : gameMap.getMice()) {
-            if (player.getBounds().overlaps(mouse.getBounds())) {
-                mouse.activate((CatPlayer) player); // Apply the speed boost
-                itemsToRemoveMice.add(mouse); // Mark the mouse item for removal
-                System.out.println("Collected Mouse! Speed Boost! " + ((CatPlayer) player).getSpeed());
+            for (CatPlayer player : players) {
+                if (player.getBounds().overlaps(mouse.getBounds())) {
+                    mouse.activate(player);
+                    itemsToRemoveMice.add(mouse); // Mark the mouse item for removal
+                    System.out.println("Collected Mouse! Speed Boost! " + ((CatPlayer) player).getSpeed());
+                }
+            
             }
         }
         

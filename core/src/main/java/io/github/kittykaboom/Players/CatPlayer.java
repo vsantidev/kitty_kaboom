@@ -23,7 +23,7 @@ public class CatPlayer extends Player {
     private List<YarnBall> yarnBalls;
     private int maxYarnBalls = 1;
     private int maxYarnBallsPower = 1;
-    private float speed = 200; 
+    private float speed = 100; 
 
     //____________ CONSTRUCTOR ____________
     public CatPlayer(float x, float y, String texturePath) {
@@ -62,24 +62,28 @@ public class CatPlayer extends Player {
 
     //____________ METHODS ____________  
     @Override 
-    public void move(float dx, float dy) {
-        float newX = bounds.x + dx;
-        float newY = bounds.y + dy;
-    
-        // Vérifie que le joueur reste dans les limites de la carte
-        if (newX >= 0 && newX + bounds.width <= GameMap.getTotalCols() * GameMap.getCellWidth()
-            && newY >= 0 && newY + bounds.height <= GameMap.getTotalRows() * GameMap.getCellHeight()) {
-            bounds.setPosition(newX, newY);
-            position.set(newX, newY);
-            playerSprite.setPosition(newX, newY);
-        }
-    } 
     // public void move(float dx, float dy) {
-    //     float deltaX = dx * speed * Gdx.graphics.getDeltaTime();
-    //     float deltaY = dy * speed * Gdx.graphics.getDeltaTime();
-    //     playerSprite.translate(dx, dy);
-    //     bounds.setPosition(playerSprite.getX(), playerSprite.getY()); // Met à jour les limites
+    //     // Multiplie dx et dy par la vitesse actuelle du joueur
+    //     float deltaX = dx * speed;
+    //     float deltaY = dy * speed;
+    
+    //     float newX = bounds.x + deltaX;
+    //     float newY = bounds.y + deltaY;
+    
+    //     // Vérifie que le joueur reste dans les limites de la carte
+    //     if (newX >= 0 && newX + bounds.width <= GameMap.getTotalCols() * GameMap.getCellWidth()
+    //         && newY >= 0 && newY + bounds.height <= GameMap.getTotalRows() * GameMap.getCellHeight()) {
+    //         bounds.setPosition(newX, newY);
+    //         position.set(newX, newY);
+    //         playerSprite.setPosition(newX, newY);
+    //     }
     // }
+    public void move(float dx, float dy) {
+        float deltaX = dx * speed * Gdx.graphics.getDeltaTime();
+        float deltaY = dy * speed * Gdx.graphics.getDeltaTime();
+        playerSprite.translate(dx, dy);
+        bounds.setPosition(playerSprite.getX(), playerSprite.getY()); // Met à jour les limites
+    }
 
 
     public boolean placeYarnBall(GameScreen gameScreen) {
@@ -147,8 +151,12 @@ public class CatPlayer extends Player {
         this.playerSprite.setTexture(texture);
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
+    // public void setSpeed(float speed) {
+    //     this.speed = speed;
+    // }
+
+    public void setSpeed(float newSpeed) {
+        this.speed = newSpeed;
     }
 
     //____________ METHODS ABSTRACT ____________

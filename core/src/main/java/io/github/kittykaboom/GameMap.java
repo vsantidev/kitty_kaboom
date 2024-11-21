@@ -4,9 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
-
+import java.util.List;
 
 import com.badlogic.gdx.math.Rectangle;
 
@@ -55,13 +54,31 @@ public class GameMap {
         loadMap(mapFilePath);
     }
 
-    public List<Mouse> getMice() {
-        return mice;
+    public Player getPlayer() {
+        return player;
     }
 
     public List<CatPlayer> getPlayers() {
         return players;
     }
+
+    public List<Wall> getWalls() {
+        return walls;
+    }
+
+    public List<YarnBallUp> getYarnBallUps() {
+        return yarnBallUp;
+    }
+
+    public List<YarnBallPower> getYarnBallPowers() {
+        return yarnBallPower;
+    }
+
+    public List<Mouse> getMice() {
+        return mice;
+    }
+
+
     public boolean isSolidWall(int cellX, int cellY, boolean  destroyIfDestructible) {
         // System.out.println("cell X:");
         // System.out.println(cellX);
@@ -139,27 +156,6 @@ public class GameMap {
         }
     }
     
-
-
-    public List<Wall> getWalls() {
-        return walls;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public List<YarnBallUp> getYarnBallUps() {
-        return yarnBallUp;
-    }
-
-    public List<YarnBallPower> getYarnBallPowers() {
-        return yarnBallPower;
-    }
-
-    public List<Mouse> getMice() {
-        return mice;
-    }
 
     public void checkMouseCollisions(CatPlayer player) {
         Iterator<Mouse> iterator = mice.iterator(); // Assuming you have a List<Mouse> called `mice`
