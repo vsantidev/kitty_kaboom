@@ -81,7 +81,7 @@ public class CatPlayer extends Player {
     public void move(float dx, float dy) {
         float deltaX = dx * speed * Gdx.graphics.getDeltaTime();
         float deltaY = dy * speed * Gdx.graphics.getDeltaTime();
-        playerSprite.translate(dx, dy);
+        playerSprite.translate(deltaX, deltaY);
         bounds.setPosition(playerSprite.getX(), playerSprite.getY()); // Met à jour les limites
     }
 

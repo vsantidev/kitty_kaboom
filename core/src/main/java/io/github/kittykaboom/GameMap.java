@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.math.Rectangle;
@@ -127,25 +126,26 @@ public class GameMap {
 
                     switch (cell) {
                         case 'x':
-                            walls.add(new SolidWall(x, y));
-                            break;
-                        case 's':
-                            walls.add(new SoftWall(x, y));
-                            break;
-                        case 'p':
-                            String texturePath = players.isEmpty() ? "textures/cat_one.png" : "textures/cat_two.png";
-                            CatPlayer newPlayer = new CatPlayer(x, y, texturePath);
-                            players.add(newPlayer);
-                            break;
-                        case 'u':
-                            yarnBallUp.add(new YarnBallUp(x, y));
-                            break;
-                        case 'f':
-                            yarnBallPower.add(new YarnBallPower(x, y));
-                            break;
-                        case 'm': 
-                            mice.add(new Mouse(x, y));
-                            break;
+                        walls.add(new SolidWall(x, y));
+                        break;
+                    case 's':
+                        walls.add(new SoftWall(x, y)); // Coordonnées alignées sur la grille
+                        System.out.println("SoftWall added at: " + x + ", " + y);
+                        break;
+                    case 'p':
+                        String texturePath = players.isEmpty() ? "textures/cat_one.png" : "textures/cat_two.png";
+                        CatPlayer newPlayer = new CatPlayer(x, y, texturePath);
+                        players.add(newPlayer);
+                        break;
+                    case 'u':
+                        yarnBallUp.add(new YarnBallUp(x, y));
+                        break;
+                    case 'f':
+                        yarnBallPower.add(new YarnBallPower(x, y));
+                        break;
+                    case 'm':
+                        mice.add(new Mouse(x, y));
+                        break;
                         // Ajoutez d’autres cases pour d’autres éléments
                     }
                 }
@@ -157,19 +157,19 @@ public class GameMap {
     }
     
 
-    public void checkMouseCollisions(CatPlayer player) {
-        Iterator<Mouse> iterator = mice.iterator(); // Assuming you have a List<Mouse> called `mice`
+    // public void checkMouseCollisions(CatPlayer player) {
+    //     Iterator<Mouse> iterator = mice.iterator(); // Assuming you have a List<Mouse> called `mice`
 
-        while (iterator.hasNext()) {
-            Mouse mouse = iterator.next();
+    //     while (iterator.hasNext()) {
+    //         Mouse mouse = iterator.next();
 
-            if (mouse.getBounds().overlaps(player.getBounds())) {
-                mouse.activate(player); // Apply any effects from the mouse
-                iterator.remove(); // Remove the mouse from the game after collision
-                System.out.println("Mouse collected! Speed Boost applied.");
-            }
-        }
-    }
+    //         if (mouse.getBounds().overlaps(player.getBounds())) {
+    //             mouse.activate(player); // Apply any effects from the mouse
+    //             iterator.remove(); // Remove the mouse from the game after collision
+    //             System.out.println("Mouse collected! Speed Boost applied.");
+    //         }
+    //     }
+    // }
 
     public boolean isPlayerHit(List<Rectangle> explosionAreas) {
     /*Rectangle playerBounds = player.getBounds(); // Supposons que votre joueur a une méthode getBounds()
