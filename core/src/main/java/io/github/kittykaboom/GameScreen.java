@@ -307,6 +307,41 @@ private void renderExplosions(float delta, SpriteBatch batch) {
     //     }
     // }
 
+    // Affichage commandes
+    private void renderPlayerControls(SpriteBatch batch) {
+        BitmapFont font = new BitmapFont(); // Vous pouvez personnaliser la police
+        font.getData().setScale(1.5f); // Agrandit un peu le texte pour une meilleure visibilité
+    
+        // Couleur pour le texte
+        font.setColor(1, 1, 1, 1); // Blanc (RGBA)
+
+
+        // JOUEUR 1
+            // Texte pour le joueur 1 dans la marge gauche
+            int leftMargin = 50; // Distance depuis le bord gauche
+        
+            // Affiche les commandes
+            font.draw(batch, "Joueur 1:\n" +
+                    "Z = Haut\n" +
+                    "S = Bas\n" +
+                    "Q = Gauche\n" +
+                    "D = Droite\n" +
+                    "E = Placer Balle de Laine",
+                    leftMargin, Gdx.graphics.getHeight() - 50); // Position à gauche de l'écran (x = 10, y = 500)
+    
+        // JOUEUR 1
+            // Texte pour le joueur 1 dans la marge gauche
+            int rightMargin = Gdx.graphics.getWidth() - 250;
+            // Affiche les commandes du joueur 2 à droite de l'écran
+            font.draw(batch, "Joueur 2:\n" +
+                    "Flèche Haut = Haut\n" +
+                    "Flèche Bas = Bas\n" +
+                    "Flèche Gauche = Gauche\n" +
+                    "Flèche Droite = Droite\n" +
+                    "Espace = Placer Balle de Laine",
+                    rightMargin, Gdx.graphics.getHeight() - 50); // Position à droite de l'écran (x = 700, y = 500)
+    }
+    
     
     
     
@@ -331,6 +366,12 @@ private void renderExplosions(float delta, SpriteBatch batch) {
         camera.update(); // Met à jour la caméra
         batch.setProjectionMatrix(camera.combined); // Définit la matrice de projection
         
+        camera.position.set(
+            (GameMap.getTotalCols() * GameMap.getCellWidth()) / 2f, // Centre horizontal
+            (GameMap.getTotalRows() * GameMap.getCellHeight()) / 2f, // Centre vertical
+            0
+        );
+
 
         if (transitioningToGameOver) {
             gameOverDelay -= delta;
@@ -409,6 +450,9 @@ private void renderExplosions(float delta, SpriteBatch batch) {
         for (Mouse Mouse: gameMap.getMice()) {
             Mouse.render(batch);
         }
+
+        // Affiche les commandes des joueurs
+        renderPlayerControls(batch);
 
         renderExplosions(delta, batch);
 
