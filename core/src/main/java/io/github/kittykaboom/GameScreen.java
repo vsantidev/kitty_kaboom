@@ -34,6 +34,11 @@ public class GameScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     private Main main;
     private Texture gameOverBackground;
+    private BitmapFont font;
+
+    private static final int LEFT_MARGIN = 300; // Espace pour le texte du joueur 1
+    private static final int RIGHT_MARGIN = 300; // Espace pour le texte du joueur 2
+
 
     private CatPlayer loser;
     private CatPlayer winner;
@@ -52,18 +57,23 @@ public class GameScreen implements Screen {
     // _________________ CONSTRUCTOR _________________
     public GameScreen() {
         camera = new OrthographicCamera();
-        viewport = new FitViewport(800, 600, camera);
+        int viewportWidth = (GameMap.getTotalCols() * GameMap.getCellWidth()) + LEFT_MARGIN + RIGHT_MARGIN;
+        int viewportHeight = (GameMap.getTotalRows() * GameMap.getCellHeight());
+        viewport = new FitViewport(viewportWidth, viewportHeight, camera);
         batch = new SpriteBatch();
         gameOverBackground = new Texture("textures/game_over_background.png"); // Texture personnalisée
         
         // Initialise la carte
         gameMap = new GameMap("map.txt");
         walls = gameMap.getWalls();
-
-        //Initialisation des joueurs
         shapeRenderer = new ShapeRenderer();
         players = gameMap.getPlayers();
+    
+        // Initialisation du BitmapFont
+        font = new BitmapFont();
+        font.getData().setScale(1.5f); // Ajuste la taille du texte
     }
+    
 
 
     // _________________ GETTERS & SETTERS _________________
@@ -309,16 +319,19 @@ private void renderExplosions(float delta, SpriteBatch batch) {
 
     // Affichage commandes
     private void renderPlayerControls(SpriteBatch batch) {
-        BitmapFont font = new BitmapFont(); // Vous pouvez personnaliser la police
-        font.getData().setScale(1.5f); // Agrandit un peu le texte pour une meilleure visibilité
-    
+        if (font == null) {
+            font = new BitmapFont(); // Initialise si ce n'est pas déjà fait
+            font.getData().setScale(1.5f);
+        }
         // Couleur pour le texte
         font.setColor(1, 1, 1, 1); // Blanc (RGBA)
 
-
+        // Coordonnées adaptées au monde
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
         // JOUEUR 1
             // Texte pour le joueur 1 dans la marge gauche
-            int leftMargin = 50; // Distance depuis le bord gauche
+            float leftMargin = 50; // Distance depuis le bord gauche
         
             // Affiche les commandes
             font.draw(batch, "Joueur 1:\n" +
@@ -327,11 +340,11 @@ private void renderExplosions(float delta, SpriteBatch batch) {
                     "Q = Gauche\n" +
                     "D = Droite\n" +
                     "E = Placer Balle de Laine",
-                    leftMargin, Gdx.graphics.getHeight() - 50); // Position à gauche de l'écran (x = 10, y = 500)
+                    leftMargin, worldHeight - 50); // Position à gauche de l'écran (x = 10, y = 500)
     
         // JOUEUR 1
             // Texte pour le joueur 1 dans la marge gauche
-            int rightMargin = Gdx.graphics.getWidth() - 250;
+            float rightMargin = worldWidth - 250;
             // Affiche les commandes du joueur 2 à droite de l'écran
             font.draw(batch, "Joueur 2:\n" +
                     "Flèche Haut = Haut\n" +
@@ -339,7 +352,7 @@ private void renderExplosions(float delta, SpriteBatch batch) {
                     "Flèche Gauche = Gauche\n" +
                     "Flèche Droite = Droite\n" +
                     "Espace = Placer Balle de Laine",
-                    rightMargin, Gdx.graphics.getHeight() - 50); // Position à droite de l'écran (x = 700, y = 500)
+                    rightMargin, worldHeight - 50); // Position à droite de l'écran (x = 700, y = 500)
     }
     
     
@@ -362,15 +375,16 @@ private void renderExplosions(float delta, SpriteBatch batch) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Efface l'écran
 
         //camera.position.set(400, 300, 0);
-        camera.position.set((GameMap.getTotalCols() * GameMap.getCellWidth()) / 2f, (GameMap.getTotalRows() * GameMap.getCellHeight()) / 2f, 0);
+        camera.position.set(
+            LEFT_MARGIN + (GameMap.getTotalCols() * GameMap.getCellWidth()) / 2f, // Centre horizontal avec marge gauche
+            (GameMap.getTotalRows() * GameMap.getCellHeight()) / 2f,              // Centre vertical
+            0
+        );
+        
         camera.update(); // Met à jour la caméra
         batch.setProjectionMatrix(camera.combined); // Définit la matrice de projection
         
-        camera.position.set(
-            (GameMap.getTotalCols() * GameMap.getCellWidth()) / 2f, // Centre horizontal
-            (GameMap.getTotalRows() * GameMap.getCellHeight()) / 2f, // Centre vertical
-            0
-        );
+
 
 
         if (transitioningToGameOver) {
@@ -457,6 +471,21 @@ private void renderExplosions(float delta, SpriteBatch batch) {
         renderExplosions(delta, batch);
 
         batch.end();
+
+        shapeRenderer.setProjectionMatrix(camera.combined);
+shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+shapeRenderer.setColor(1, 0, 0, 1); // Couleur rouge pour le contour
+
+// Rectangle autour de la carte
+shapeRenderer.rect(
+    LEFT_MARGIN, // Position X du bord gauche
+    0,           // Position Y du bas de la carte
+    GameMap.getTotalCols() * GameMap.getCellWidth(), // Largeur de la carte
+    GameMap.getTotalRows() * GameMap.getCellHeight() - 1 // Hauteur de la carte
+);
+
+shapeRenderer.end();
+
     }
 
     
@@ -501,6 +530,10 @@ private void renderExplosions(float delta, SpriteBatch batch) {
 
 
         shapeRenderer.dispose();
+
+        if (font != null) {
+            font.dispose(); // Libère la mémoire utilisée par le BitmapFont
+        }
 
     }
 
