@@ -9,14 +9,14 @@ dependencies {
   }
   testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 
-  plugins {
-    id 'jacoco'
-  }
+  // plugins {
+  //   id 'jacoco'
+  // }
 
-  jacocoTestReport {
-    reports {
-      xml.required = true
-      html.required = true
-    }
-  }
+  // jacocoTestReport {
+  //   reports {
+  //     xml.required = true
+  //     html.required = true
+  //   }
+  // }
 }
