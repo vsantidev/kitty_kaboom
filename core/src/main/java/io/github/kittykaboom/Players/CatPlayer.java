@@ -3,6 +3,7 @@ package io.github.kittykaboom.Players;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,29 +17,36 @@ import io.github.kittykaboom.Items.YarnBall.YarnBall;
 public class CatPlayer extends Player {
     private Sprite playerSprite;
     private Rectangle bounds;
+    private boolean  isLoser = false;
+    private Texture loserTexture;
+    private float blinkTimer = 0f;
     private List<YarnBall> yarnBalls;
     private int maxYarnBalls = 1;
+    private int maxYarnBallsPower = 1;
+    private float speed = 100; 
 
     //____________ CONSTRUCTOR ____________
-    public CatPlayer(float x, float y) {
+    public CatPlayer(float x, float y, String texturePath) {
         super(x, y);
-        this.texture = new Texture("textures/cat.png");
-        
+        // this.texture = new Texture("textures/cat.png");
+        this.texture = new Texture(texturePath); // Charge la texture spécifiée
         playerSprite = new Sprite(this.texture);
         playerSprite.setPosition(x, y);
 
         // Réduit la taille du sprite et des limites pour éviter les collisions excessives
-        int adjustedWidth = GameMap.getCellWidth() - 5;  // 10 pixels de moins en largeur
-        int adjustedHeight = GameMap.getCellHeight() - 5; // 10 pixels de moins en hauteur
+        int adjustedWidth = GameMap.getCellWidth() - 7;  // 10 pixels de moins en largeur
+        int adjustedHeight = GameMap.getCellHeight() - 7; // 10 pixels de moins en hauteur
 
         this.playerSprite.setSize(adjustedWidth, adjustedHeight);
         this.bounds = new Rectangle(x, y, adjustedWidth, adjustedHeight);
         
         // Initialise la liste de balle de laine
         this.yarnBalls = new ArrayList<>();
+        
     }
 
     //____________ GETTERS & SETTERS ____________
+    @Override
     public Rectangle getBounds(){
         return  bounds;
     }
@@ -47,21 +55,44 @@ public class CatPlayer extends Player {
         return maxYarnBalls;
     }
 
+    public int getMaxYarnBallsPower(){
+        return maxYarnBallsPower;
+    }
 
-    //____________ METHODS ____________    
+
+    //____________ METHODS ____________  
+    @Override 
+    // public void move(float dx, float dy) {
+    //     // Multiplie dx et dy par la vitesse actuelle du joueur
+    //     float deltaX = dx * speed;
+    //     float deltaY = dy * speed;
+    
+    //     float newX = bounds.x + deltaX;
+    //     float newY = bounds.y + deltaY;
+    
+    //     // Vérifie que le joueur reste dans les limites de la carte
+    //     if (newX >= 0 && newX + bounds.width <= GameMap.getTotalCols() * GameMap.getCellWidth()
+    //         && newY >= 0 && newY + bounds.height <= GameMap.getTotalRows() * GameMap.getCellHeight()) {
+    //         bounds.setPosition(newX, newY);
+    //         position.set(newX, newY);
+    //         playerSprite.setPosition(newX, newY);
+    //     }
+    // }
     public void move(float dx, float dy) {
-        playerSprite.translate(dx, dy);
+        float deltaX = dx * speed * Gdx.graphics.getDeltaTime();
+        float deltaY = dy * speed * Gdx.graphics.getDeltaTime();
+        playerSprite.translate(deltaX, deltaY);
         bounds.setPosition(playerSprite.getX(), playerSprite.getY()); // Met à jour les limites
     }
 
 
     public boolean placeYarnBall(GameScreen gameScreen) {
-        int col = (int) Math.round(bounds.x / 50) * 50;
-        int row = (int) Math.round(bounds.y / 46) * 46;
+        int col = (int) Math.round(bounds.x / GameMap.getCellWidth()) * GameMap.getCellWidth();
+        int row = (int) Math.round(bounds.y / GameMap.getCellHeight()) * GameMap.getCellHeight();
         if (yarnBalls.size() < maxYarnBalls) {
-            // Créez une nouvelle balle de laine à la position actuelle du joueur
-            YarnBall yarnBall = new BasicYarnBall(col, row, gameScreen);
-            yarnBalls.add(yarnBall); // Ajoutez-la à la liste
+            // Passe le joueur actuel au constructeur
+            YarnBall yarnBall = new BasicYarnBall(col, row, gameScreen, this);
+            yarnBalls.add(yarnBall);
             return true;
         }
         return false;
@@ -94,6 +125,22 @@ public class CatPlayer extends Player {
     }
 
 
+    public void increaseMaxYarnBallsPower() {
+        maxYarnBallsPower++;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setLoser(boolean isLoser) {
+        this.isLoser = isLoser;
+        if (isLoser) {
+            loserTexture = new Texture("textures/loser.png"); // Texture pour le joueur perdant
+        }
+    }
+
+
     //____________ SETTER ABSTRACT ____________
     @Override
     public void setTexture(Texture texture) {
@@ -102,6 +149,14 @@ public class CatPlayer extends Player {
         }
         this.texture = texture;
         this.playerSprite.setTexture(texture);
+    }
+
+    // public void setSpeed(float speed) {
+    //     this.speed = speed;
+    // }
+
+    public void setSpeed(float newSpeed) {
+        this.speed = newSpeed;
     }
 
     //____________ METHODS ABSTRACT ____________
@@ -113,6 +168,15 @@ public class CatPlayer extends Player {
         // Dessine toutes les balles de laine
         for (YarnBall yarnBall : yarnBalls) {
             yarnBall.render(batch);
+        }
+
+        if (isLoser) {
+            blinkTimer += Gdx.graphics.getDeltaTime();
+            if ((int) (blinkTimer * 10) % 2 == 0) {
+                batch.draw(loserTexture, bounds.x, bounds.y, bounds.width, bounds.height);
+            }
+        } else {
+            playerSprite.draw(batch);
         }
     }
 
