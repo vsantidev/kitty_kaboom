@@ -170,4 +170,12 @@ public class BasicYarnBall extends YarnBall {
         System.out.println("Explosion effect applied!");
     }
 
+    // @Test
+    // public void testYarnBallPlacement() {
+    //     CatPlayer player = new CatPlayer(100, 100, "textures/cat_one.png");
+    //     GameMap gameMap = new GameMap("map.txt");
+    //     player.placeYarnBall(gameMap);
+    //     assertEquals(1, player.getYarnBalls().size(), "Player should place one yarn ball");
+    // }
+
 }

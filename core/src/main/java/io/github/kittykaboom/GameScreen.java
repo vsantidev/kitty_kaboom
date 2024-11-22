@@ -24,6 +24,7 @@ import io.github.kittykaboom.Items.YarnBall.Explosion;
 import io.github.kittykaboom.Items.YarnBall.YarnBall;
 import io.github.kittykaboom.Players.CatPlayer;
 import io.github.kittykaboom.Walls.SoftWall;
+import io.github.kittykaboom.Walls.SolidWall;
 import io.github.kittykaboom.Walls.Wall;
 
 public class GameScreen implements Screen {
@@ -285,6 +286,14 @@ private void renderExplosions(float delta, SpriteBatch batch) {
     private void handleWallDestruction(SoftWall wall) {
         System.out.println("SoftWall destroyed at: " + wall.getBounds().x + ", " + wall.getBounds().y);
     }
+
+    // @Test
+    // public void testPlayerCollisionWithWalls() {
+    //     CatPlayer player = new CatPlayer(50, 50, "textures/cat_one.png");
+    //     Wall wall = new SolidWall(50, 50);
+    //     player.move(10, 0);
+    //     assertFalse(player.getBounds().overlaps(wall.getBounds()), "Player should not move through solid walls");
+    // }
 
     // private void handleWallDestruction(SoftWall wall) {
     //     // Probabilité d'apparition d'un item (30%)
