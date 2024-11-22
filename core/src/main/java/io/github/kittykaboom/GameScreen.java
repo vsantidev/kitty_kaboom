@@ -35,6 +35,20 @@ public class GameScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     private Main main;
     private Texture gameOverBackground;
+    private Texture arrowRight;
+    private Texture arrowLeft;
+    private Texture arrowUp;
+    private Texture arrowDown;
+    private Texture mouse;
+    private Texture ballFire;
+    private Texture ballUp;
+    private Texture wallsoft;
+    private BitmapFont font;
+    private Texture trophyTexture;
+
+    private static final int LEFT_MARGIN = 300; // Espace pour le texte du joueur 1
+    private static final int RIGHT_MARGIN = 300; // Espace pour le texte du joueur 2
+
 
     private CatPlayer loser;
     private CatPlayer winner;
@@ -53,18 +67,32 @@ public class GameScreen implements Screen {
     // _________________ CONSTRUCTOR _________________
     public GameScreen() {
         camera = new OrthographicCamera();
-        viewport = new FitViewport(800, 600, camera);
+        int viewportWidth = (GameMap.getTotalCols() * GameMap.getCellWidth()) + LEFT_MARGIN + RIGHT_MARGIN;
+        int viewportHeight = (GameMap.getTotalRows() * GameMap.getCellHeight());
+        viewport = new FitViewport(viewportWidth, viewportHeight, camera);
         batch = new SpriteBatch();
-        gameOverBackground = new Texture("textures/game_over_background.png"); // Texture personnalisée
-        
+        gameOverBackground = new Texture("textures/trophe.png"); // Texture personnalisée
+        arrowRight = new Texture("textures/direction_arrow_right.png");
+        arrowLeft = new Texture("textures/direction_arrow_left.png");
+        arrowUp = new Texture("textures/direction_arrow_top.png");
+        arrowDown = new Texture("textures/direction_arrow_bottom.png");
+        ballUp = new Texture("textures/yarn_ball_up.png");
+        ballFire = new Texture("textures/yarn_ball_power.png");
+        mouse = new Texture("textures/mouse.png");
+        wallsoft = new Texture("textures/soft_wall.png");
+
+
         // Initialise la carte
         gameMap = new GameMap("map.txt");
         walls = gameMap.getWalls();
-
-        //Initialisation des joueurs
         shapeRenderer = new ShapeRenderer();
         players = gameMap.getPlayers();
+    
+        // Initialisation du BitmapFont
+        font = new BitmapFont();
+        font.getData().setScale(1.5f); // Ajuste la taille du texte
     }
+    
 
 
     // _________________ GETTERS & SETTERS _________________
@@ -316,6 +344,115 @@ private void renderExplosions(float delta, SpriteBatch batch) {
     //     }
     // }
 
+    // Affichage commandes
+    private void renderPlayerControls(SpriteBatch batch) {
+        if (font == null) {
+            font = new BitmapFont(); // Initialise si ce n'est pas déjà fait
+            font.getData().setScale(1.5f);
+        }
+    
+        // Coordonnées adaptées au monde
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
+    
+        // JOUEUR 2
+        float leftMargin = 50; // Distance depuis le bord gauche
+        
+            // Texte principal pour le joueur 2
+            font.setColor(1, 1, 1, 1); // Blanc
+            font.draw(batch, "Joueur 2:\n\n" +
+                    "Z = Haut\n" +
+                    "S = Bas\n" +
+                    "Q = Gauche\n" +
+                    "D = Droite\n" +
+                    "R = Balle de Laine",
+                    leftMargin, worldHeight - 50);
+
+
+        
+        // Texte principal pour le joueur 2
+        font.setColor(1, 1, 1, 1); // Blanc
+
+
+            font.draw(batch, "Objets spéciaux:", 50, 290);
+                 // Dessin des flèches avec le texte correspondant
+            batch.draw(ballUp, 50, 210, 40, 40); // Flèche haut
+            font.draw(batch, "= Nombre de balle", 100, 238);
+        
+            batch.draw(ballFire, 50, 160, 40, 40); // Flèche bas
+            font.draw(batch, "= Puissance balle", 100, 185);
+        
+            batch.draw(mouse, 50, 110, 40, 40); // Flèche gauche
+            font.draw(batch, "= Rapidité du joueur", 100, 135);
+
+            batch.draw(wallsoft, 50, 60, 40, 40); // Flèche gauche
+            font.draw(batch, "= mur destructible", 100, 85);
+        
+        // JOUEUR 1
+        float rightMargin = worldWidth - 250;
+            // Texte principal pour le joueur 1
+            font.setColor(1, 1, 1, 1); // Blanc
+
+            // Dessin des flèches avec le texte correspondant
+            font.draw(batch, "Joueur 1:", 1100, 548);
+
+            // Dessin des flèches avec le texte correspondant
+            batch.draw(arrowUp, 1100, 478, 22, 20); // Flèche haut
+            font.draw(batch, "= Haut", 1130, 498);
+        
+            batch.draw(arrowDown, 1100, 450, 22, 20); // Flèche bas
+            font.draw(batch, "= Bas", 1130, 470);
+        
+            batch.draw(arrowLeft, 1100, 422, 22, 20); // Flèche gauche
+            font.draw(batch, "= Gauche", 1130, 442);
+        
+            batch.draw(arrowRight, 1100, 394, 22, 20); // Flèche droite
+            font.draw(batch, "= Droite", 1130, 414);
+
+            font.draw(batch, "3 = Balle de Laine", 1100, 385);
+
+    }
+    
+    // private void renderInstructions(SpriteBatch batch) {
+    //     if (font == null) {
+    //         font = new BitmapFont(); // Initialise la police si nécessaire
+    //         font.getData().setScale(1.5f); // Ajuste la taille pour une meilleure lisibilité
+    //     }
+    
+    //     font.setColor(1, 1, 1, 1); // Couleur blanche pour le texte
+    
+    //     // Texte des indications
+    //     String instructions = "Balle +1 = Augmente le nombre de balle    |    Balle Fire = Augmente la puissance de la balle    |    Souris = Augmente la vitesse du joueur";
+    
+    //     // Mesure la largeur exacte du texte
+    //     GlyphLayout layout = new GlyphLayout();
+    //     layout.setText(font, instructions);
+    
+    //     float textWidth = layout.width; // Largeur du texte
+    //     float textHeight = layout.height; // Hauteur du texte
+    
+    //     // Coordonnées pour centrer le texte
+    //     float worldWidth = viewport.getWorldWidth(); // Largeur visible dans le monde
+    //     float worldHeight = viewport.getWorldHeight(); // Hauteur visible dans le monde
+    
+
+    //     float zoneStartY = 0; // Bas de l'écran
+    //     float zoneHeight = worldHeight * 0.1f; // 10 % de la hauteur visible
+    
+    //     // Centre vertical dans la zone verte foncée
+    //     float textY = zoneStartY + (zoneHeight / 2f) + (textHeight / 2f);
+    //     float textX = (worldWidth - textWidth) / 2f; // Centrage horizontal
+
+    //     // Dessine les instructions centrées
+    //     font.draw(batch, instructions, textX, textY);
+    
+    //     // DEBUG : Dessine un rectangle pour visualiser la zone verte foncée
+    //     // shapeRenderer.setProjectionMatrix(camera.combined);
+    //     // shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+    //     // shapeRenderer.setColor(1, 0, 0, 1); // Rouge pour le débogage
+    //     // shapeRenderer.rect(0, zoneStartY, worldWidth, zoneHeight); // Rectangle autour de la zone
+    //     // shapeRenderer.end();
+    // }
     
     
     
@@ -336,10 +473,18 @@ private void renderExplosions(float delta, SpriteBatch batch) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Efface l'écran
 
         //camera.position.set(400, 300, 0);
-        camera.position.set((GameMap.getTotalCols() * GameMap.getCellWidth()) / 2f, (GameMap.getTotalRows() * GameMap.getCellHeight()) / 2f, 0);
+        camera.position.set(
+            LEFT_MARGIN + (GameMap.getTotalCols() * GameMap.getCellWidth()) / 2f, // Centre horizontal avec LEFT_MARGIN
+            (GameMap.getTotalRows() * GameMap.getCellHeight()) / 2f,              // Centre vertical
+            0
+        );
+        
+        
         camera.update(); // Met à jour la caméra
         batch.setProjectionMatrix(camera.combined); // Définit la matrice de projection
         
+
+
 
         if (transitioningToGameOver) {
             gameOverDelay -= delta;
@@ -354,19 +499,32 @@ private void renderExplosions(float delta, SpriteBatch batch) {
             batch.begin();
 
             //Affiche l'image de fond
-            batch.draw(gameOverBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Texture en plein écran
+            //batch.draw(gameOverBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Texture en plein écran
             
             // Affiche le message Game Over
-            BitmapFont font = new BitmapFont();
+            //BitmapFont font = new BitmapFont();
             font.getData().setScale(2);
-            font.draw(batch, "Fin de jeu !", 300, 500);
+            // font.draw(batch, "Fin de jeu !", 300, 500);
 
-            // Affiche le gagnant
-            font.draw(batch, "Gagnant: " + (winner == players.get(0) ? "Chat roux" : "Chat tigré"), 300, 350);
 
-             // Affiche qui a perdu
-            font.draw(batch, "Perdant: " + (loser == players.get(0) ? "Chat tigré" : "Chat blanc"), 300, 400);
+            // Affiche le trophée au centre
+            float trophyX = (Gdx.graphics.getWidth() - 200) / 2f; // Centré horizontalement
+            float trophyY = (Gdx.graphics.getHeight()) / 2f; // Décalé vers le haut
+            batch.draw(gameOverBackground, trophyX, trophyY, 200, 200); // Dessine le trophée
 
+
+            // // Affiche le gagnant
+            // font.draw(batch, "Gagnant: " + (winner == players.get(0) ? "Chat roux" : "Chat gris"), 300, 350);
+
+            //  // Affiche qui a perdu
+            // font.draw(batch, "Perdant: " + (loser == players.get(0) ? "Chat roux" : "Chat gris"), 300, 400);
+
+            // Affiche le texte du gagnant
+            //BitmapFont font = new BitmapFont();
+            font.getData().setScale(2);
+            font.setColor(1, 1, 1, 1); // Couleur blanche
+            String winnerName = (winner == players.get(0) ? "Chat roux" : "Chat tigré");
+            font.draw(batch, "Félicitations, " + winnerName + " !", trophyX - 50, trophyY - 50);
 
             
             // Affiche les images des joueurs
@@ -379,14 +537,9 @@ private void renderExplosions(float delta, SpriteBatch batch) {
 
             // Instructions
             // font.draw(batch, "Press R to Restart", 300, 250);
-            font.draw(batch, "Appuyer sur Q pour quitter le jeu", 100, 200);
+            font.draw(batch, "Appuyer sur Q pour quitter le jeu", trophyX - 100 , trophyY - 175);
             batch.end();
 
-            if (Gdx.input.isKeyPressed(Input.Keys.R)) {
-                System.out.println("Restart ou pas !");
-                restartGame();
-                return;
-            }
             if (Gdx.input.isKeyPressed(Input.Keys.A)){
                 Gdx.app.exit();
             }
@@ -419,12 +572,29 @@ private void renderExplosions(float delta, SpriteBatch batch) {
             Mouse.render(batch);
         }
 
+        // Affiche les commandes des joueurs
+        renderPlayerControls(batch);
+        // renderInstructions(batch);
         renderExplosions(delta, batch);
 
         batch.end();
+        // --- Vérification emplacement map ---
+            shapeRenderer.setProjectionMatrix(camera.combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            //shapeRenderer.setColor(0, 1, 0, 1); // Couleur rouge pour le contour
+
+        // Rectangle autour de la carte
+            // shapeRenderer.rect(
+            //     LEFT_MARGIN, // Position X du bord gauche
+            //     0,           // Position Y du bas de la carte
+            //     GameMap.getTotalCols() * GameMap.getCellWidth(), // Largeur de la carte
+            //     GameMap.getTotalRows() * GameMap.getCellHeight() - 1 // Hauteur de la carte
+            // );
+
+        shapeRenderer.end();
+
     }
 
-    
     
 
     // ========== Resize ==========
@@ -467,6 +637,10 @@ private void renderExplosions(float delta, SpriteBatch batch) {
 
         shapeRenderer.dispose();
 
+        if (font != null) {
+            font.dispose(); // Libère la mémoire utilisée par le BitmapFont
+        }
+
     }
 
 
@@ -486,7 +660,7 @@ private void renderExplosions(float delta, SpriteBatch batch) {
                 if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) dy -= speed;
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) dx -= speed;
                 if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) dx += speed;
-                if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_3)) {
                     player.placeYarnBall(this);
                     System.out.println("Player 1 placed a yarn ball");
                 }
@@ -495,7 +669,7 @@ private void renderExplosions(float delta, SpriteBatch batch) {
                 if (Gdx.input.isKeyPressed(Input.Keys.S)) dy -= speed;
                 if (Gdx.input.isKeyPressed(Input.Keys.A)) dx -= speed;
                 if (Gdx.input.isKeyPressed(Input.Keys.D)) dx += speed;
-                if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
                     player.placeYarnBall(this);
                     System.out.println("Player 2 placed a yarn ball");
                 }
