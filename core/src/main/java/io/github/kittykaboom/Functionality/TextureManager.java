@@ -22,12 +22,12 @@ public class TextureManager {
     }
 
     public static Texture getTexture(String path) {
-    if (!textures.containsKey(path)) {
-        System.out.println("Loading texture: " + path);
-        textures.put(path, new Texture(path));
-    } else {
-        System.out.println("Reusing texture: " + path);
+        if (!textures.containsKey(path)) {
+            System.out.println("Loading texture: " + path);
+            textures.put(path, new Texture(path));
+        } else {
+            System.out.println("Reusing texture: " + path);
+        }
+        return textures.get(path);
     }
-    return textures.get(path);
-}
 }
