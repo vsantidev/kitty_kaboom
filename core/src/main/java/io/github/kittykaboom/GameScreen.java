@@ -323,54 +323,56 @@ private void renderExplosions(float delta, SpriteBatch batch) {
             font = new BitmapFont(); // Initialise si ce n'est pas déjà fait
             font.getData().setScale(1.5f);
         }
-        
-        // Couleur pour le texte
-        font.setColor(1, 1, 1, 1); // Blanc (RGBA)
-
+    
         // Coordonnées adaptées au monde
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
-
-        // // Texte du joueur 1 centré dans la marge gauche
-        // String player1Text = "Joueur 1:\nZ = Haut\nS = Bas\nQ = Gauche\nD = Droite\nE = Placer Balle de Laine";
-        // float player1TextHeight = font.getCapHeight() * 6; // Hauteur estimée pour 6 lignes
-        // float player1StartY = (worldHeight + player1TextHeight) / 2f; // Centrage vertical
-
-        // font.draw(batch, player1Text, LEFT_MARGIN / 4f, player1StartY); // Centrage dans la marge gauche
-
-
-        //     // Texte du joueur 2 centré dans la marge droite
-        //     String player2Text = "Joueur 2:\nFlèche Haut = Haut\nFlèche Bas = Bas\nFlèche Gauche = Gauche\nFlèche Droite = Droite\nEspace = Placer Balle de Laine";
-        //     float player2TextHeight = font.getCapHeight() * 6; // Hauteur estimée pour 6 lignes
-        //     float player2StartY = (worldHeight + player2TextHeight) / 2f; // Centrage vertical
-
-        //     font.draw(batch, player2Text, viewport.getWorldWidth() - RIGHT_MARGIN + RIGHT_MARGIN / 4f, player2StartY); // Centrage dans la marge droite
-
-
-        // JOUEUR 1
-            // Texte pour le joueur 1 dans la marge gauche
-            float leftMargin = 50; // Distance depuis le bord gauche
-        
-            // Affiche les commandes
-            font.draw(batch, "Joueur 1:\n" +
-                    "Z = Haut\n" +
-                    "S = Bas\n" +
-                    "Q = Gauche\n" +
-                    "D = Droite\n" +
-                    "E = Balle de Laine",
-                    leftMargin, worldHeight - 50); // Position à gauche de l'écran (x = 10, y = 500)
+    
+        // JOUEUR 2
+        float leftMargin = 50; // Distance depuis le bord gauche
+    
+        // Ombre pour le texte du joueur 2
+        font.setColor(0, 0, 0, 1); // Noir (RGBA)
+        font.draw(batch, "Joueur 1:\n" +
+                "Z = Haut\n" +
+                "S = Bas\n" +
+                "Q = Gauche\n" +
+                "D = Droite\n" +
+                "E = Balle de Laine",
+                leftMargin + 2, worldHeight - 50 - 2); // Légèrement décalé (2 pixels à droite et en bas)
+    
+        // Texte principal pour le joueur 2
+        font.setColor(1, 1, 1, 1); // Blanc
+        font.draw(batch, "Joueur 1:\n" +
+                "Z = Haut\n" +
+                "S = Bas\n" +
+                "Q = Gauche\n" +
+                "D = Droite\n" +
+                "E = Balle de Laine",
+                leftMargin, worldHeight - 50);
     
         // JOUEUR 1
-            // Texte pour le joueur 1 dans la marge gauche
-            float rightMargin = worldWidth - 250;
-            // Affiche les commandes du joueur 2 à droite de l'écran
-            font.draw(batch, "Joueur 2:\n" +
-                    "Flèche Haut = Haut\n" +
-                    "Flèche Bas = Bas\n" +
-                    "Flèche Gauche = Gauche\n" +
-                    "Flèche Droite = Droite\n" +
-                    "Espace = Balle de Laine",
-                    rightMargin, worldHeight - 50); // Position à droite de l'écran (x = 700, y = 500)
+        float rightMargin = worldWidth - 250;
+    
+        // Ombre pour le texte du joueur 1
+        font.setColor(0, 0, 0, 1); // Noir (RGBA)
+        font.draw(batch, "Joueur 1:\n" +
+                "Flèche Haut = Haut\n" +
+                "Flèche Bas = Bas\n" +
+                "Flèche Gauche = Gauche\n" +
+                "Flèche Droite = Droite\n" +
+                "Espace = Balle de Laine",
+                rightMargin + 2, worldHeight - 50 - 2); // Légèrement décalé (2 pixels à droite et en bas)
+    
+        // Texte principal pour le joueur 1
+        font.setColor(1, 1, 1, 1); // Blanc
+        font.draw(batch, "Joueur 1:\n" +
+                "Flèche Haut = Haut\n" +
+                "Flèche Bas = Bas\n" +
+                "Flèche Gauche = Gauche\n" +
+                "Flèche Droite = Droite\n" +
+                "Espace = Balle de Laine",
+                rightMargin, worldHeight - 50);
     }
     
     
@@ -427,10 +429,10 @@ private void renderExplosions(float delta, SpriteBatch batch) {
             font.draw(batch, "Fin de jeu !", 300, 500);
 
             // Affiche le gagnant
-            font.draw(batch, "Gagnant: " + (winner == players.get(0) ? "Chat roux" : "Chat tigré"), 300, 350);
+            font.draw(batch, "Gagnant: " + (winner == players.get(0) ? "Chat roux" : "Chat gris"), 300, 350);
 
              // Affiche qui a perdu
-            font.draw(batch, "Perdant: " + (loser == players.get(0) ? "Chat tigré" : "Chat roux"), 300, 400);
+            font.draw(batch, "Perdant: " + (loser == players.get(0) ? "Chat roux" : "Chat gris"), 300, 400);
 
 
             
