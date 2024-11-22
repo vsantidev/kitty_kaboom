@@ -1,6 +1,7 @@
 package io.github.kittykaboom.Walls;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 
 import io.github.kittykaboom.Functionality.TextureManager;
 import io.github.kittykaboom.GameMap;
@@ -74,4 +75,11 @@ public class  SoftWall extends Wall {
     public boolean isDestructible() {
         return true;
     }
+
+    // @Test
+    // public void testSoftWallDestruction() {
+    //     SoftWall softWall = new SoftWall(50, 50);
+    //     Rectangle explosionArea = new Rectangle(50, 50, 50, 46);
+    //     assertTrue(explosionArea.overlaps(softWall.getBounds()), "Explosion should overlap with SoftWall");
+    // }
 }
