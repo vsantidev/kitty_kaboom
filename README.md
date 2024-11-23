@@ -1,33 +1,43 @@
 # KittyKaboom
+KittyKaboom est un projet développé avec libGDX, un framework de développement de jeux multiplateformes. Ce projet est généré avec gdx-liftoff et comprend une structure de base avec des écrans et des fonctionnalités permettant de démarrer un jeu de manière simple.
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+Structure du projet
+Le projet KittyKaboom est divisé en plusieurs modules :
 
-This project was generated with a template including simple application launchers and a main class extending `Game` that sets the first screen.
+core : Ce module contient la logique du jeu partagée entre toutes les plateformes.
+lwjgl3 : La plateforme principale pour le bureau utilisant LWJGL3. Ce module permet de lancer l'application sur un environnement de bureau.
+Plateformes supportées
+Desktop (lwjgl3) : La plateforme de bureau utilisant LWJGL3.
+Le projet peut être étendu pour supporter d'autres plateformes comme Android et iOS en utilisant les modules appropriés dans libGDX.
+Dépendances et gestion du projet avec Gradle
+Ce projet utilise Gradle pour gérer les dépendances et la construction des projets. Le wrapper Gradle est inclus, vous pouvez donc utiliser les commandes suivantes :
 
-## Platforms
+./gradlew (Linux/macOS) ou gradlew.bat (Windows) pour exécuter les tâches Gradle.
+Tâches utiles de Gradle :
+--continue : Continue l'exécution même en cas d'erreurs.
+--daemon : Utilise le démon Gradle pour exécuter les tâches choisies, accélérant ainsi le processus.
+--offline : Utilise les archives de dépendances en cache pour éviter de télécharger de nouveau les dépendances.
+--refresh-dependencies : Force la validation de toutes les dépendances, utile pour les versions snapshot.
+Commandes principales :
+build : Construit les sources et archive tous les projets.
+clean : Supprime les dossiers de construction, où les classes compilées et les archives construites sont stockées.
+eclipse : Génère les données de projet pour Eclipse.
+idea : Génère les données de projet pour IntelliJ IDEA.
+lwjgl3:jar : Construit l'archive exécutable du jeu. Le fichier JAR peut être trouvé dans lwjgl3/build/libs.
+lwjgl3:run : Lance l'application sur la plateforme de bureau.
+test : Exécute les tests unitaires (si disponibles).
+Démarrage rapide
+Clonez ce projet ou téléchargez-le.
+Ouvrez un terminal ou un invite de commandes à la racine du projet.
+Exécutez la commande suivante pour construire et lancer l'application :
+Pour build : ./gradlew build (ou gradlew.bat build sur Windows).
+Pour lancer l'application : ./gradlew lwjgl3:run (ou gradlew.bat lwjgl3:run sur Windows).
+Développement et contributions
+Si vous souhaitez contribuer au projet KittyKaboom, voici quelques étapes que vous pouvez suivre :
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
-
-## Gradle
-
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
-
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
-
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+Forkez le dépôt.
+Créez une branche pour votre fonctionnalité ou correction de bug.
+Appliquez vos modifications.
+Soumettez une pull request avec une description détaillée de vos modifications.
+Contact
+Pour toute question ou suggestion, n'hésitez pas à contacter l'équipe de développement via les forums ou le suivi des problèmes sur le dépôt GitHub.
